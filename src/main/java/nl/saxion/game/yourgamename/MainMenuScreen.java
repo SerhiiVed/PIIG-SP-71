@@ -19,14 +19,16 @@ public class MainMenuScreen extends ScalableGameScreen {
         super.render(delta);
 
         // When the user presses enter, go to the next screen
-        if (GameApp.isKeyJustPressed(Input.Keys.ENTER)) {
-            GameApp.switchScreen("YourGameScreen");
+        if (GameApp.isKeyJustPressed(Input.Keys.NUM_1)) {
+            GameApp.switchScreen("SideViewScreen");
+        } else if (GameApp.isKeyJustPressed(Input.Keys.NUM_2)) {
+            GameApp.switchScreen("TopDownScreen");
         }
 
         // Render the main menu
         GameApp.clearScreen("black");
         GameApp.startSpriteRendering();
-        GameApp.drawTextCentered("basic", "Start Game (press enter)", getWorldWidth()/2, getWorldHeight()/2, "amber-500");
+        GameApp.drawTextCentered("basic", "Start Game 1 for Side and 2 for Top", getWorldWidth()/2, getWorldHeight()/2, "amber-500");
         GameApp.endSpriteRendering();
     }
 
