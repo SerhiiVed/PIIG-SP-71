@@ -15,6 +15,6 @@ public class Main {
         GameApp.addScreen("DamageShowcaseScreen", new DamageShowcaseScreen());
 
         // Start game loop and show main menu screen
-        GameApp.start("Your Game Name", 800, 450, 60, false, "DamageShowcaseScreen");
+        GameApp.start("SideViewScreen", 800, 450, 60, false, "SideViewScreen");
     }
 }
