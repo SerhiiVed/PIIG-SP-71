@@ -1,5 +1,6 @@
 package nl.saxion.game;
 
+import nl.saxion.game.yourgamename.DamageShowcaseScreen;
 import nl.saxion.game.yourgamename.SideViewScreen;
 import nl.saxion.game.yourgamename.YourGameScreen;
 import nl.saxion.game.yourgamename.MainMenuScreen;
@@ -11,6 +12,7 @@ public class Main {
         GameApp.addScreen("MainMenuScreen", new MainMenuScreen());
         GameApp.addScreen("YourGameScreen", new YourGameScreen());
         GameApp.addScreen("SideViewScreen", new SideViewScreen());
+        GameApp.addScreen("DamageShowcaseScreen", new DamageShowcaseScreen());
 
         // Start game loop and show main menu screen
         GameApp.start("SideViewScreen", 800, 450, 60, false, "SideViewScreen");
