@@ -12,8 +12,8 @@ public class SideViewScreen extends ScalableGameScreen {
     ArrayList<Item> worldItems = new ArrayList<>();
     Obstacle obstacle;
     Obstacle obstacle2;
-    float velocityY = 0;
-    boolean isOnGround;
+//    float velocityY = 0;
+//    boolean isOnGround;
     public SideViewScreen() {
         super(1280, 720);
     }
@@ -38,12 +38,14 @@ public class SideViewScreen extends ScalableGameScreen {
         obstacle.width = 100;
         obstacle.x = 200;
         obstacle.y = 120;
+        obstacle.playerInstance = player;
 
         obstacle2 = new Obstacle();
         obstacle2.height = 50;
         obstacle2.width = 200;
         obstacle2.x = 500;
         obstacle2.y = 0;
+        obstacle2.playerInstance = player;
 
 
         inventory.clear();
@@ -73,16 +75,16 @@ public class SideViewScreen extends ScalableGameScreen {
             player.x -= PLAYER_SPEED * delta;
         } if (GameApp.isKeyPressed(Input.Keys.D)) {
             player.x += PLAYER_SPEED * delta;
-        } if (GameApp.isKeyPressed(Input.Keys.SPACE) && isOnGround) {
-            velocityY = 800;
-            isOnGround = false;
+        } if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
+            player.velocityY = 800;
+            player.isOnGround = false;
         }
 
-        velocityY = velocityY - (gravity * delta);
-        player.y += velocityY*delta;
+        player.velocityY = player.velocityY - (gravity * delta);
+        player.y += player.velocityY*delta;
         if (player.y <= 0) {
             player.y = 0;
-            isOnGround = true;
+            player.isOnGround = true;
         }
 
 
@@ -93,8 +95,8 @@ public class SideViewScreen extends ScalableGameScreen {
             }
         }
         player.x = GameApp.clamp(player.x, 0, getWorldWidth() - PLAYER_SIZE);
-        playerMovement(oldPosY, oldPosX, obstacle.x, obstacle.y, obstacle.height, obstacle.width);
-        playerMovement(oldPosY, oldPosX, obstacle2.x, obstacle2.y, obstacle2.height, obstacle2.width);
+        obstacle.playerMovement(oldPosY, oldPosX);
+        obstacle2.playerMovement(oldPosY, oldPosX);
 
         GameApp.clearScreen();
 
@@ -132,31 +134,6 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.disposeTexture("item");
         GameApp.disposeTexture("basicFont");
     }
-
-    public void playerMovement (float oldPosY, float oldPosX, int obsX, int obsY, int obsH, int obsW) {
-        if (GameApp.rectOverlap(player.x, player.y, player.w, player.h,
-                obsX, obsY, obsW, obsH)) {
-            if (oldPosY < obsY + obsH && oldPosY + player.h > obsY) {
-                if (oldPosX + player.w <= obsX) {
-                    player.x = obsX - player.w;
-                } else if (oldPosX >= obsX + obsW) {
-                    player.x = obsX + obsW;
-                }
-            }
-        }
-
-        if (GameApp.rectOverlap(player.x, player.y, 100, 100, obsX, obsY, obsW, obsH)) {
-            if (oldPosY >= obsY + obsH) {
-                player.y = obsY + obsH;
-                velocityY = 0;
-                isOnGround = true;
-            } else if (oldPosY + player.h <= obsY) {
-                player.y = obsY - player.h;
-                velocityY = 0;
-            }
-        }
-    }
-
 
     public void collectItem(Item collectedItem) {
         collectedItem.collected = true;

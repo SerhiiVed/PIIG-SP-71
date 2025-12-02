@@ -7,6 +7,8 @@ public class Player {
     float y;
     float w;
     float h;
+    float velocityY = 0;
+    boolean isOnGround;
     float TopDownWidth;
     float TopDownHeight;
     float maxHealth = 10;
