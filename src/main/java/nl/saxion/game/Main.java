@@ -13,6 +13,6 @@ public class Main {
         GameApp.addScreen("SideViewScreen", new SideViewScreen());
 
         // Start game loop and show main menu screen
-        GameApp.start("Your Game Name", 800, 450, 60, false, "SideViewScreen");
+        GameApp.start("SideViewScreen", 800, 450, 60, false, "SideViewScreen");
     }
 }
