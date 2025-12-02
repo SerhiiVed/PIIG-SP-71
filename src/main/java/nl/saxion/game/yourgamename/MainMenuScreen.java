@@ -15,7 +15,7 @@ public class MainMenuScreen extends ScalableGameScreen {
     SpriteBatch myBatch;
 
     public MainMenuScreen() {
-        super(1280, 720);
+        super(800, 450);
     }
 
     @Override
@@ -24,12 +24,12 @@ public class MainMenuScreen extends ScalableGameScreen {
 
         // Title Font Setup
         fontTitle = new BitmapFont();
-        fontTitle.getData().setScale(3.0f);
+        fontTitle.getData().setScale(2.0f);
         fontTitle.setColor(Color.RED);
 
         // Menu Font Setup
         fontMenu = new BitmapFont();
-        fontMenu.getData().setScale(1.5f);
+        fontMenu.getData().setScale(1.0f);
         fontMenu.setColor(Color.WHITE);
 
         myBatch = new SpriteBatch();
@@ -42,16 +42,16 @@ public class MainMenuScreen extends ScalableGameScreen {
         myBatch.begin();
 
         // DRAWING LOGIC (Using separate fonts)
-        fontTitle.draw(myBatch, "DEUX EX MACHINA", 200, 600); // Increased Y for visibility
-
-        fontMenu.setColor(Color.YELLOW);
-        fontMenu.draw(myBatch, "Start Game: Europe \n (PRESS LEVEL)", 200, 500); // Adjusted Y
+        fontTitle.draw(myBatch, "DEUX EX MACHINA", 275, 300); // Increased Y for visibility
 
         fontMenu.setColor(Color.GRAY);
-        fontMenu.draw(myBatch, "1. VERY HARD", 200, 400); // Adjusted Y
-        fontMenu.draw(myBatch, "2. HARD", 200, 350);
-        fontMenu.draw(myBatch, "3. NORMAL", 200, 300);
-        fontMenu.draw(myBatch, "4. EASY", 200, 250);
+        fontMenu.draw(myBatch, "Start Game: Europe (PRESS LEVEL)", 275, 260); // Adjusted Y
+
+        fontMenu.setColor(Color.GRAY);
+        fontMenu.draw(myBatch, "1. VERY HARD", 275, 225); // Adjusted Y
+        fontMenu.draw(myBatch, "2. HARD", 275, 200);
+        fontMenu.draw(myBatch, "3. NORMAL", 275, 175);
+        fontMenu.draw(myBatch, "4. EASY", 275, 150);
 
         myBatch.end();
 
