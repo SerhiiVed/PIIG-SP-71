@@ -17,6 +17,6 @@ public class Main {
         GameApp.addScreen("TopDownScreen", new TopDownScreen());
 
         // Start game loop and show main menu screen
-        GameApp.start("SideViewScreen", 800, 450, 60, false, "SideViewScreen");
+        GameApp.start("SideViewScreen", 800, 450, 60, false, "TopDownScreen");
     }
 }
