@@ -24,8 +24,8 @@ public class SideViewScreen extends ScalableGameScreen {
         player = new Player();
         player.x = 0;
         player.y = 0;
-        player.height = 100;
-        player.width = 100;
+        player.h = 100;
+        player.w = 100;
 
         obstacle = new Obstacle();
         obstacle.height = 20;
@@ -89,11 +89,11 @@ public class SideViewScreen extends ScalableGameScreen {
     }
 
     public void playerMovement (float oldPosY, float oldPosX, int obsX, int obsY, int obsH, int obsW) {
-        if (GameApp.rectOverlap(player.x, player.y, player.width, player.height,
+        if (GameApp.rectOverlap(player.x, player.y, player.w, player.h,
                 obsX, obsY, obsW, obsH)) {
-            if (oldPosY < obsY + obsH && oldPosY + player.height > obsY) {
-                if (oldPosX + player.width <= obsX) {
-                    player.x = obsX - player.width;
+            if (oldPosY < obsY + obsH && oldPosY + player.h > obsY) {
+                if (oldPosX + player.w <= obsX) {
+                    player.x = obsX - player.w;
                 } else if (oldPosX >= obsX + obsW) {
                     player.x = obsX + obsW;
                 }
@@ -105,8 +105,8 @@ public class SideViewScreen extends ScalableGameScreen {
                 player.y = obsY + obsH;
                 velocityY = 0;
                 isOnGround = true;
-            } else if (oldPosY + player.height <= obsY) {
-                player.y = obsY - player.height;
+            } else if (oldPosY + player.h <= obsY) {
+                player.y = obsY - player.h;
                 velocityY = 0;
             }
         }
