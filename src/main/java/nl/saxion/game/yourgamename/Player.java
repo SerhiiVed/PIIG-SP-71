@@ -7,6 +7,8 @@ public class Player {
     float y;
     float w;
     float h;
+    float TopDownWidth;
+    float TopDownHeight;
     float maxHealth = 10;
     float currentHealth = maxHealth;
 
@@ -28,5 +30,4 @@ public class Player {
     public boolean CheckForHit(float RectangleX, float RectangleY, float RectangleW, float RectangleH ) {
         return GameApp.rectOverlap(x, y, w, h, RectangleX, RectangleY, RectangleW, RectangleH);
     }
-
 }
