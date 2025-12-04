@@ -20,12 +20,15 @@ public class SideViewScreen extends ScalableGameScreen {
     public static final int PLAYER_SPEED = 600;
     public static final int ITEM_SIZE= 100;
     public static final int PLAYER_SIZE= 100;
+    private static final String MUSIC_NAME = "game1_theme_music";
 
     @Override
     public void show() {
         GameApp.addTexture("chatGpt", "textures/ChatGPT.png");
         GameApp.addTexture("item", "textures/item.PNG");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
+        GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
+        GameApp.playMusic(MUSIC_NAME, true, 0.5f);
 
         player = new Player();
         player.x = 0;
@@ -131,6 +134,8 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.disposeTexture("chatGpt");
         GameApp.disposeTexture("item");
         GameApp.disposeTexture("basicFont");
+        GameApp.stopMusic(MUSIC_NAME);
+        GameApp.disposeMusic(MUSIC_NAME);
     }
 
     public void playerMovement (float oldPosY, float oldPosX, int obsX, int obsY, int obsH, int obsW) {
