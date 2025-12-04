@@ -10,10 +10,12 @@ public class SideViewScreen extends ScalableGameScreen {
     Player player;
     ArrayList<Item> inventory = new ArrayList<>();
     ArrayList<Item> worldItems = new ArrayList<>();
-    Obstacle obstacle;
-    Obstacle obstacle2;
-    float velocityY = 0;
-    boolean isOnGround;
+    ArrayList<Obstacle> obstacles = new ArrayList<>();
+    Obstacle movingObstacle;
+
+    Camera camera;
+//    float velocityY = 0;
+//    boolean isOnGround;
     public SideViewScreen() {
         super(1280, 720);
     }
@@ -21,6 +23,7 @@ public class SideViewScreen extends ScalableGameScreen {
     public static final int ITEM_SIZE= 100;
     public static final int PLAYER_SIZE= 100;
     private static final String MUSIC_NAME = "game1_theme_music";
+    public boolean isMovingRight = true;
 
     @Override
     public void show() {
@@ -30,24 +33,33 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
 
+        movingObstacle = new Obstacle();
+        camera = new Camera();
         player = new Player();
         player.x = 0;
         player.y = 0;
         player.h = 100;
         player.w = 100;
 
-        obstacle = new Obstacle();
-        obstacle.height = 20;
-        obstacle.width = 100;
-        obstacle.x = 200;
-        obstacle.y = 120;
+        movingObstacle.x = 3750;
+        movingObstacle.y = 520;
+        movingObstacle.h = 20;
+        movingObstacle.w = 120;
+        movingObstacle.playerInstance = player;
 
-        obstacle2 = new Obstacle();
-        obstacle2.height = 50;
-        obstacle2.width = 200;
-        obstacle2.x = 500;
-        obstacle2.y = 0;
+        addObstacle(600, 0, 70, 80);
+        addObstacle(900, 0, 100, 100);
+        addObstacle(1200, 0, 270, 80);
+        addObstacle(2000, 0, 120, 100);
+        addObstacle(1700, 220, 120, 20);
+        addObstacle(2450, 0, 350, 450);
+        addObstacle(1900, 360, 120, 20);
 
+        addObstacle(3300, 180, 120, 20);
+        addObstacle(3600, 320, 120, 20);
+        addObstacle(3400, 470, 120, 20);
+
+        addObstacle(3900, 0, 100, 100);
 
         inventory.clear();
         worldItems.clear();
@@ -69,51 +81,62 @@ public class SideViewScreen extends ScalableGameScreen {
         float oldPosX = player.x;
         float oldPosY = player.y;
         super.render(delta);
-
         int gravity = 2000;
+        player.x = GameApp.clamp(player.x, 0, 10000);
 
+
+//          Player movement
         if (GameApp.isKeyPressed(Input.Keys.A)) {
             player.x -= PLAYER_SPEED * delta;
         } if (GameApp.isKeyPressed(Input.Keys.D)) {
             player.x += PLAYER_SPEED * delta;
-        } if (GameApp.isKeyPressed(Input.Keys.SPACE) && isOnGround) {
-            velocityY = 800;
-            isOnGround = false;
+        } if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
+            player.velocityY = 800;
+            player.isOnGround = false;
+        } if (player.velocityY < 0) {
+            player.isOnGround = false;
         }
 
-        velocityY = velocityY - (gravity * delta);
-        player.y += velocityY*delta;
+        movePlatform();
+
+//        Camera (follow player)
+        if (player.x > camera.cameraX + camera.cameraTriggerF) {
+            camera.cameraX = player.x - camera.cameraTriggerF;
+        } else if (player.x < camera.cameraX + camera.cameraTriggerB) {
+            camera.cameraX = player.x - camera.cameraTriggerB;
+        }
+        player.velocityY = player.velocityY - (gravity * delta);
+        player.y += player.velocityY*delta;
         if (player.y <= 0) {
             player.y = 0;
-            isOnGround = true;
+            player.isOnGround = true;
         }
-
 
         for (Item item : worldItems) {
             if (!item.collected && GameApp.rectOverlap( player.x, player.y, PLAYER_SIZE, PLAYER_SIZE, item.x, item.y, ITEM_SIZE, ITEM_SIZE)) {
-
                 collectItem(item);
             }
         }
-        player.x = GameApp.clamp(player.x, 0, getWorldWidth() - PLAYER_SIZE);
-        playerMovement(oldPosY, oldPosX, obstacle.x, obstacle.y, obstacle.height, obstacle.width);
-        playerMovement(oldPosY, oldPosX, obstacle2.x, obstacle2.y, obstacle2.height, obstacle2.width);
+        for (Obstacle ob: obstacles) {
+            ob.playerMovement(oldPosY, oldPosX);
+        }
+        movingObstacle.playerMovement(oldPosY, oldPosX);
 
         GameApp.clearScreen();
 
+
         GameApp.startShapeRenderingFilled();
-        GameApp.drawRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-        GameApp.drawRect(obstacle2.x, obstacle2.y, obstacle2.width, obstacle2.height);
+            for (Obstacle ob: obstacles) {
+                GameApp.drawRect(ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+            }
+            GameApp.drawRect(movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, movingObstacle.h);
         GameApp.endShapeRendering();
 
-        player.x = GameApp.clamp(player.x, 0, getWorldWidth() - 100);
-
         GameApp.startSpriteRendering();
-
-        GameApp.drawTexture("chatGpt", player.x, player.y, PLAYER_SIZE, PLAYER_SIZE);
+        GameApp.drawTexture("chatGpt", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         for (Item item : worldItems) {
             if (!item.collected) {
-                GameApp.drawTexture("item", item.x, item.y, ITEM_SIZE, ITEM_SIZE);
+                GameApp.drawTexture("item", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
             }
         }
         int y = 600;
@@ -124,7 +147,6 @@ public class SideViewScreen extends ScalableGameScreen {
             GameApp.drawText("basicFont", i.name + " x" + i.amount, 50, y, Color.WHITE);
             y += 22;
         }
-
         GameApp.endSpriteRendering();
 
     }
@@ -138,31 +160,8 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.disposeMusic(MUSIC_NAME);
     }
 
-    public void playerMovement (float oldPosY, float oldPosX, int obsX, int obsY, int obsH, int obsW) {
-        if (GameApp.rectOverlap(player.x, player.y, player.w, player.h,
-                obsX, obsY, obsW, obsH)) {
-            if (oldPosY < obsY + obsH && oldPosY + player.h > obsY) {
-                if (oldPosX + player.w <= obsX) {
-                    player.x = obsX - player.w;
-                } else if (oldPosX >= obsX + obsW) {
-                    player.x = obsX + obsW;
-                }
-            }
-        }
-
-        if (GameApp.rectOverlap(player.x, player.y, 100, 100, obsX, obsY, obsW, obsH)) {
-            if (oldPosY >= obsY + obsH) {
-                player.y = obsY + obsH;
-                velocityY = 0;
-                isOnGround = true;
-            } else if (oldPosY + player.h <= obsY) {
-                player.y = obsY - player.h;
-                velocityY = 0;
-            }
-        }
-    }
-
-
+//    Custom methods
+//
     public void collectItem(Item collectedItem) {
         collectedItem.collected = true;
         for (Item i : inventory) {
@@ -176,5 +175,30 @@ public class SideViewScreen extends ScalableGameScreen {
         newItem.amount = 1;
 
         inventory.add(newItem);
+    }
+
+
+    public void movePlatform () {
+        if (isMovingRight) {
+            movingObstacle.x += 3;
+            if (movingObstacle.x >= 4500) {
+                isMovingRight = false;
+            }
+        } else {
+            movingObstacle.x -= 3;
+            if (movingObstacle.x <= 3700) {
+                isMovingRight = true;
+            }
+        }
+    }
+
+    public void addObstacle (int x, int y, int w, int h) {
+        Obstacle item = new Obstacle();
+        item.x = x;
+        item.y = y;
+        item.w = w;
+        item.h = h;
+        item.playerInstance = player;
+        obstacles.add(item);
     }
 }

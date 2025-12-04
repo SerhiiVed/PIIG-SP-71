@@ -7,7 +7,12 @@ public class Player {
     float y;
     float w;
     float h;
-    float maxHealth = 10;
+    float velocityY = 0;
+    float velocityX = 0;
+    boolean isOnGround;
+    float TopDownWidth;
+    float TopDownHeight;
+    float maxHealth = 10f;
     float currentHealth = maxHealth;
 
     public void UpdateHealth(float amount, boolean increase) {
@@ -26,7 +31,6 @@ public class Player {
     }
 
     public boolean CheckForHit(float RectangleX, float RectangleY, float RectangleW, float RectangleH ) {
-        return GameApp.rectOverlap(x, y, w, h, RectangleX, RectangleY, RectangleW, RectangleH);
+        return GameApp.rectOverlap(x, y, TopDownWidth, TopDownHeight, RectangleX, RectangleY, RectangleW, RectangleH);
     }
-
 }
