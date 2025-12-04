@@ -1,9 +1,7 @@
 package nl.saxion.game.yourgamename;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import nl.saxion.gameapp.GameApp;
 import nl.saxion.gameapp.screens.ScalableGameScreen;
@@ -19,7 +17,8 @@ public class DamageShowcaseScreen extends ScalableGameScreen {
     public static final int PLAYER_SPEED = 600;
 
     //creates the arraylist that will hold all damageparts
-    ArrayList<DamagePart> damageParts = new ArrayList<>();
+//    ArrayList<DamagePart> damageParts = new ArrayList<>();
+    GlobalArrays Parts = new GlobalArrays();
 
     @Override
     public void show() {
@@ -33,9 +32,9 @@ public class DamageShowcaseScreen extends ScalableGameScreen {
         player.h = 100;
 
         //creates a new damagepart and adds it to the damagepart arraylist
-        DamagePart dp = new DamagePart();
-        dp.populateInstance(GameApp.getWorldWidth() / 2, 200, 100, 100, 1, player);
-        damageParts.add(dp);
+//        Part dp = new Part();
+//        dp.populateInstance(GameApp.getWorldWidth() / 2, 200, 100, 100, 1, player);
+//        Parts.DamageParts.add(dp);
 
     }
 
@@ -61,17 +60,17 @@ public class DamageShowcaseScreen extends ScalableGameScreen {
             isOnGround = true;
         }
 
-        if (part) {
-            DamagePart dp = new DamagePart();
-            dp.populateInstance(100, 100, 100, 100, 1, player);
-            damageParts.add(dp);
-            part = false;
-        }
+//        if (part) {
+//            DamagePart dp = new DamagePart();
+//            dp.populateInstance(100, 100, 100, 100, 1, player);
+//            damageParts.add(dp);
+//            part = false;
+//        }
         //Iterates through all damageparts and checks if the damagepart has hit the player
-        Iterator<DamagePart> iter = damageParts.iterator();
+        Iterator<Part> iter = Parts.Parts.iterator();
         while (iter.hasNext()) {
-            DamagePart dp = iter.next();
-            if (dp.CheckForPlayer()) {
+            Part dp = iter.next();
+            if (dp.checkForPlayer()) {
                 iter.remove();
                 System.out.println("DamagePart hit player and removed!");
             }
@@ -87,7 +86,7 @@ public class DamageShowcaseScreen extends ScalableGameScreen {
 
         GameApp.startShapeRenderingFilled();
         //draws all damageparts on the screen
-        for (DamagePart dp : damageParts) {
+        for (Part dp : Parts.Parts) {
             GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, "red-950");
         }
         GameApp.endShapeRendering();

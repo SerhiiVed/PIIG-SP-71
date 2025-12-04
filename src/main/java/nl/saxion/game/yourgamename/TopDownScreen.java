@@ -3,11 +3,15 @@ package nl.saxion.game.yourgamename;
 import com.badlogic.gdx.Input;
 import nl.saxion.gameapp.GameApp;
 import nl.saxion.gameapp.screens.ScalableGameScreen;
+import nl.saxion.gameapp.utils.Timer;
+
+import java.util.Iterator;
 
 public class TopDownScreen extends ScalableGameScreen {
-    String randomBoxColor = "violet-500";
-    String randomBackgroundColor = "black";
     Player PlayerCharacter = new Player();
+    Boss BossCharacter = new Boss();
+    GlobalArrays Parts = new GlobalArrays();
+    int attkCount = 1;
 
     public TopDownScreen() {
         super(1280, 720);
@@ -15,49 +19,112 @@ public class TopDownScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
-//        randomBoxColor = getRandomColor();
+        GameApp.addFont("basic", "fonts/basic.ttf", 50);
+        GameApp.addFont("basic2", "fonts/basic.ttf", 200);
+
         PlayerCharacter.TopDownWidth = 40;
         PlayerCharacter.TopDownHeight = 40;
-        // Calculate where the box would be (we draw it in the center of the world)
         PlayerCharacter.x = getWorldWidth() / 2 - PlayerCharacter.TopDownWidth / 2;
-        PlayerCharacter.y = getWorldHeight() / 2 - PlayerCharacter.TopDownHeight / 2;
+        PlayerCharacter.y = 100;
+
+        BossCharacter.w = 80;
+        BossCharacter.h = 80;
+        BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
+        BossCharacter.y = getWorldHeight() / 2 - BossCharacter.h / 2;
+        BossCharacter.playerToTarget = PlayerCharacter;
+        BossCharacter.partArray = Parts;
+
+        GameApp.addTimer("attack", 3f, true);
+
+
+        //creates a new damagepart and adds it to the damagepart arraylist
+//        Part dp = new Part();
+//        dp.populateInstance(GameApp.getWorldWidth() / 2, 200, 10, 10, 1, PlayerCharacter);
+//        Parts.Parts.add(dp);
+
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
+        GameApp.updateTimers();
 
 
-        float speed = 500;
+        if (PlayerCharacter.currentHealth != 0f) {
+            float speed = 500;
 
-        if (GameApp.isKeyPressed(Input.Keys.W)) {
-            if (!((PlayerCharacter.y + PlayerCharacter.TopDownHeight) >= getWorldHeight())) {
-                PlayerCharacter.y += speed * delta;
+            if (GameApp.isKeyPressed(Input.Keys.W)) {
+                if (!((PlayerCharacter.y + PlayerCharacter.TopDownHeight) >= getWorldHeight())) {
+                    PlayerCharacter.y += speed * delta;
+                }
             }
-        }
-        if (GameApp.isKeyPressed(Input.Keys.S)) {
-            if (!(PlayerCharacter.y <= 0)){
-                PlayerCharacter.y -= speed * delta;
+            if (GameApp.isKeyPressed(Input.Keys.S)) {
+                if (!(PlayerCharacter.y <= 0)) {
+                    PlayerCharacter.y -= speed * delta;
+                }
             }
-        }
-        if (GameApp.isKeyPressed(Input.Keys.A)) {
-            if (!(PlayerCharacter.x <= 0)) {
-                PlayerCharacter.x -= speed * delta;
+            if (GameApp.isKeyPressed(Input.Keys.A)) {
+                if (!(PlayerCharacter.x <= 0)) {
+                    PlayerCharacter.x -= speed * delta;
+                }
             }
-        }
-        if (GameApp.isKeyPressed(Input.Keys.D)) {
-            if (!((PlayerCharacter.x + PlayerCharacter.TopDownWidth) >= getWorldWidth())) {
-                PlayerCharacter.x += speed * delta;
+            if (GameApp.isKeyPressed(Input.Keys.D)) {
+                if (!((PlayerCharacter.x + PlayerCharacter.TopDownWidth) >= getWorldWidth())) {
+                    PlayerCharacter.x += speed * delta;
+                }
+            }
+
+            //Iterates through all damageparts and checks if the damagepart has hit the player
+            Iterator<Part> iter = Parts.Parts.iterator();
+            while (iter.hasNext()) {
+                Part dp = iter.next();
+                if (dp.canDamage && dp.checkForPlayer()) {
+                    iter.remove();
+                }
+            }
+
+            for (Part p : Parts.Parts) {
+                if (p.canMove) {
+                    p.update(delta);
+                }
+            }
+
+            if (GameApp.timerWentOff("attack")) {
+                if (attkCount == 1) {
+                    BossCharacter.shootArcTowardPlayer(10, 700, 30);
+                    attkCount = 2;
+                } else if (attkCount == 2) {
+                    BossCharacter.shootCircle(30,600f);
+                    attkCount = 3;
+                } else if (attkCount == 3) {
+                    BossCharacter.shootCircleWithGaps(100, 200f, 30f, 70f);
+                    attkCount = 1;
+                }
             }
         }
 
 
 
         // Draw elements
-        GameApp.clearScreen(randomBackgroundColor);
+        GameApp.clearScreen("black");
         GameApp.startShapeRenderingFilled();
-        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, randomBoxColor);
+        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "violet-500");
+        GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
+
+        //draws all damageparts on the screen
+        for (Part dp : Parts.Parts) {
+            GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
+        }
         GameApp.endShapeRendering();
+
+        GameApp.startSpriteRendering();
+        GameApp.drawTextCentered("basic", "Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
+
+        if (PlayerCharacter.currentHealth == 0f) {
+            GameApp.drawTextCentered("basic2", "You Died", getWorldWidth()/2, getWorldHeight()/2, "red-600");
+
+        }
+        GameApp.endSpriteRendering();
 
     }
 
