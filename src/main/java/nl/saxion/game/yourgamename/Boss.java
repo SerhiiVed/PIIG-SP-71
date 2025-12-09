@@ -31,6 +31,22 @@ public class Boss {
         return GameApp.rectOverlap(x, y, w, h, RectangleX, RectangleY, RectangleW, RectangleH);
     }
 
+    public void shootAtSelf() {
+        float dx = (x + w / 2f) - playerToTarget.x;
+        float dy = (y + h / 2f) - playerToTarget.y;
+
+        float length = (float) Math.sqrt(dx*dx + dy*dy);
+        float dirX = dx / length;
+        float dirY = dy / length;
+
+        float speed = 1000f;
+
+        float velX = dirX * speed;
+        float velY = dirY * speed;
+
+//        bullets.add(new Bullet(x, y, velX, velY));
+        partArray.Parts.add(new Part(playerToTarget.x + playerToTarget.w / 2f, playerToTarget.y + playerToTarget.h / 2f, 10, 10, 1f, playerToTarget, this, true, true, true, velX, velY));
+    }
 
 
 
@@ -48,7 +64,7 @@ public class Boss {
         float velY = dirY * speed;
 
 //        bullets.add(new Bullet(x, y, velX, velY));
-        partArray.Parts.add(new Part(x + w / 2f, y + h / 2f, 10, 10, 1f, playerToTarget, true, true, velX, velY));
+        partArray.Parts.add(new Part(x + w / 2f, y + h / 2f, 10, 10, 1f, playerToTarget, this, false, true, true, velX, velY));
     }
 
     public void shootCircle(int bulletCount, float speed) {
@@ -70,7 +86,7 @@ public class Boss {
 
             // spawn bullet
             partArray.Parts.add(
-                    new Part(cx, cy, 10, 10, 1, playerToTarget, true, true, velX, velY)
+                    new Part(cx, cy, 10, 10, 1, playerToTarget, this, false, true, true, velX, velY)
             );
         }
     }
@@ -104,7 +120,7 @@ public class Boss {
             float velY = dirY * speed;
 
             partArray.Parts.add(
-                    new Part(cx, cy, 10, 10, 1, playerToTarget, true, true, velX, velY)
+                    new Part(cx, cy, 10, 10, 1, playerToTarget, this, false, true, true, velX, velY)
             );
         }
     }
@@ -131,7 +147,7 @@ public class Boss {
             float velY = dirY * speed;
 
             partArray.Parts.add(
-                    new Part(cx, cy, 10, 10, 1, playerToTarget, true, true, velX, velY)
+                    new Part(cx, cy, 10, 10, 1, playerToTarget, this, false, true, true, velX, velY)
             );
         }
     }

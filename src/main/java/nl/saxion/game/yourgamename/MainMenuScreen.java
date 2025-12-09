@@ -11,7 +11,7 @@ public class MainMenuScreen extends ScalableGameScreen {
     private static final String TITLE_FONT_NAME = "menu_title_font";
     private static final String MENU_FONT_NAME = "menu_item_font";
     private static final String MUSIC_NAME = "menu_theme_music";
-    private static final int CENTER_ADJUSTMENT = -235; // 👈 시각적 중심을 왼쪽으로 30만큼 조정
+    private static final int CENTER_ADJUSTMENT = -235;
 
     public MainMenuScreen() {
         super(1280, 720);
@@ -32,7 +32,7 @@ public class MainMenuScreen extends ScalableGameScreen {
 
         GameApp.startSpriteRendering();
 
-        int centerX = (int)getWorldWidth() / 2 + CENTER_ADJUSTMENT; // 👈 조정값 적용
+        int centerX = (int)getWorldWidth() / 2 + CENTER_ADJUSTMENT;
         int yStart = 300;
         int ySpacing = 50;
 
@@ -54,7 +54,7 @@ public class MainMenuScreen extends ScalableGameScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             GameApp.switchScreen("SideViewScreen");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            GameApp.switchScreen("YourGameScreen");
+            GameApp.switchScreen("TopDownScreen");
         }
     }
 

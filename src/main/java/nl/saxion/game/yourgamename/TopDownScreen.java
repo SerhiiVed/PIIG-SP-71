@@ -12,6 +12,7 @@ public class TopDownScreen extends ScalableGameScreen {
     Boss BossCharacter = new Boss();
     GlobalArrays Parts = new GlobalArrays();
     int attkCount = 1;
+    float attkCooldown = 0f;
 
     public TopDownScreen() {
         super(1280, 720);
@@ -36,12 +37,6 @@ public class TopDownScreen extends ScalableGameScreen {
 
         GameApp.addTimer("attack", 3f, true);
 
-
-        //creates a new damagepart and adds it to the damagepart arraylist
-//        Part dp = new Part();
-//        dp.populateInstance(GameApp.getWorldWidth() / 2, 200, 10, 10, 1, PlayerCharacter);
-//        Parts.Parts.add(dp);
-
     }
 
     @Override
@@ -50,7 +45,7 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.updateTimers();
 
 
-        if (PlayerCharacter.currentHealth != 0f) {
+        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f) {
             float speed = 500;
 
             if (GameApp.isKeyPressed(Input.Keys.W)) {
@@ -74,11 +69,26 @@ public class TopDownScreen extends ScalableGameScreen {
                 }
             }
 
-            //Iterates through all damageparts and checks if the damagepart has hit the player
+            if (attkCooldown > 0) {
+                attkCooldown -= delta;
+            }
+            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
+                if (attkCooldown <= 0f) {
+                    BossCharacter.shootAtSelf();
+                    attkCooldown = 0.25f;   // 1 second cooldown
+                }
+            }
+
+            //Iterates through all damage parts and checks if the damage part has hit the player and cleans out of view parts
             Iterator<Part> iter = Parts.Parts.iterator();
             while (iter.hasNext()) {
                 Part dp = iter.next();
-                if (dp.canDamage && dp.checkForPlayer()) {
+                if (dp.x + dp.w < 0 || dp.x > 1600 || dp.y + dp.h < 0 || dp.y > 1200) {
+                    iter.remove();
+                    continue;
+                }
+
+                if (dp.canDamage && (dp.checkForPlayer() || dp.checkForBoss())) {
                     iter.remove();
                 }
             }
@@ -111,26 +121,26 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "violet-500");
         GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
 
-        //draws all damageparts on the screen
+        //draws all damage parts on the screen
         for (Part dp : Parts.Parts) {
             GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
         }
         GameApp.endShapeRendering();
 
         GameApp.startSpriteRendering();
-        GameApp.drawTextCentered("basic", "Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
+        GameApp.drawTextCentered("basic", "Player Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
+        GameApp.drawTextCentered("basic", "Boss Health: " + BossCharacter.currentHealth, 1000, 600, "amber-500");
 
         if (PlayerCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("basic2", "You Died", getWorldWidth()/2, getWorldHeight()/2, "red-600");
 
         }
+        if (BossCharacter.currentHealth == 0f) {
+            GameApp.drawTextCentered("basic2", "You Won", getWorldWidth()/2, getWorldHeight()/2, "green-500");
+
+        }
         GameApp.endSpriteRendering();
 
-    }
-
-    private String getRandomColor() {
-        int randomIndex = (int)GameApp.random(0, GameApp.getAllColors().length-1);
-        return GameApp.getAllColors()[randomIndex];
     }
 
     @Override
