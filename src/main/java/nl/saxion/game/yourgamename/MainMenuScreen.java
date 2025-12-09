@@ -2,89 +2,73 @@ package nl.saxion.game.yourgamename;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import nl.saxion.gameapp.GameApp;
 import nl.saxion.gameapp.screens.ScalableGameScreen;
 
 public class MainMenuScreen extends ScalableGameScreen {
 
-    BitmapFont fontTitle;
-    BitmapFont fontMenu;
-    SpriteBatch myBatch;
+
+    private static final String TITLE_FONT_NAME = "menu_title_font";
+    private static final String MENU_FONT_NAME = "menu_item_font";
+    private static final String MUSIC_NAME = "menu_theme_music";
+    private static final int CENTER_ADJUSTMENT = -235; // 👈 시각적 중심을 왼쪽으로 30만큼 조정
 
     public MainMenuScreen() {
-        super(800, 450);
+        super(1280, 720);
     }
 
     @Override
     public void show() {
-        // Initialization (Must be done in show())
 
-        // Title Font Setup
-        fontTitle = new BitmapFont();
-        fontTitle.getData().setScale(2.0f);
-        fontTitle.setColor(Color.RED);
-
-        // Menu Font Setup
-        fontMenu = new BitmapFont();
-        fontMenu.getData().setScale(1.0f);
-        fontMenu.setColor(Color.WHITE);
-
-        myBatch = new SpriteBatch();
+        GameApp.addFont(TITLE_FONT_NAME, "fonts/basic.ttf", 60);
+        GameApp.addFont(MENU_FONT_NAME, "fonts/basic.ttf", 30);
+        GameApp.addMusic(MUSIC_NAME, "audio/menu_theme.mp3");
+        GameApp.playMusic(MUSIC_NAME, true, 0.5f);
     }
 
     @Override
     public void render(float delta) {
         GameApp.clearScreen();
 
-        myBatch.begin();
+        GameApp.startSpriteRendering();
 
-        // DRAWING LOGIC (Using separate fonts)
-        fontTitle.draw(myBatch, "DEUX EX MACHINA", 275, 300); // Increased Y for visibility
+        int centerX = (int)getWorldWidth() / 2 + CENTER_ADJUSTMENT; // 👈 조정값 적용
+        int yStart = 300;
+        int ySpacing = 50;
 
-        fontMenu.setColor(Color.GRAY);
-        fontMenu.draw(myBatch, "Start Game: Europe (PRESS LEVEL)", 275, 260); // Adjusted Y
+        // 1. Title Drawing=
+        GameApp.drawTextHorizontallyCentered(TITLE_FONT_NAME, "DEUX EX MACHINA", centerX, 375, "red-700");
 
-        fontMenu.setColor(Color.GRAY);
-        fontMenu.draw(myBatch, "1. VERY HARD", 275, 225); // Adjusted Y
-        fontMenu.draw(myBatch, "2. HARD", 275, 200);
-        fontMenu.draw(myBatch, "3. NORMAL", 275, 175);
-        fontMenu.draw(myBatch, "4. EASY", 275, 150);
+        // 2. Menu List Drawing
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "Start Game: Europe \n(Choose your level)", centerX, yStart, "yellow-500");
 
-        myBatch.end();
+        // 3. Level
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. VERY HARD", centerX, yStart - 1 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. HARD", centerX, yStart - 2 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "3. NORMAL", centerX, yStart - 3 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "4. EASY", centerX, yStart - 4 * ySpacing, "gray-500");
 
-        // INPUT LOGIC (Using else if for safe switching)
+        GameApp.endSpriteRendering();
+
+        // 4. Input Handling
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            // Level 1 / ENTER: SideViewScreen (representative level)
             GameApp.switchScreen("SideViewScreen");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            // Level 2: YourGameScreen
             GameApp.switchScreen("YourGameScreen");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            // Level 3: Placeholder for future implementation
-            // GameApp.switchScreen("Level3Screen");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            // Level 4: Placeholder for future implementation
-            // GameApp.switchScreen("Level4Screen");
         }
-    } // End of render method
+    }
 
     @Override
     public void resize(int width, int height) {}
 
     @Override
     public void hide() {
-        // Required method for Screen interface
-    } // End of hide method
+        GameApp.disposeFont(TITLE_FONT_NAME);
+        GameApp.disposeFont(MENU_FONT_NAME);
+        GameApp.stopMusic(MUSIC_NAME);
+        GameApp.disposeMusic(MUSIC_NAME);
+    }
 
     @Override
-    public void dispose() {
-        // Clean up both font objects
-        if (fontTitle != null) fontTitle.dispose();
-        if (fontMenu != null) fontMenu.dispose();
-        if (myBatch != null) myBatch.dispose();
-    } // End of dispose method
-
-} // End of MainMenuScreen class
+    public void dispose() {}
+}
