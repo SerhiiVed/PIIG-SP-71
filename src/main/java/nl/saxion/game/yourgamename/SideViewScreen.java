@@ -25,14 +25,12 @@ public class SideViewScreen extends ScalableGameScreen {
     float bgWidth;
     float bgHeight;
     float bgScale;
-    public static final int PLAYER_SIZE= 100;
     private static final String MUSIC_NAME = "game1_theme_music";
     public boolean isMovingRight = true;
 
     @Override
     public void show() {
         GameApp.addTexture("EuropeBG", "textures/EuropeBG.PNG");
-
         GameApp.addSpriteSheet("characterEurope", "textures/characterEurope.png", 500, 650);
         GameApp.addAnimationFromSpritesheet("characterWalk", "characterEurope", 0.25f, true);
 
@@ -145,12 +143,9 @@ public class SideViewScreen extends ScalableGameScreen {
         float drawWidth = bgWidth * bgScale;
         float drawHeight = bgHeight * bgScale;
 
-        float xBg = (getWorldWidth() - drawWidth) / 2;
-        float yBg = (getWorldHeight() - drawHeight) / 2;
-
 
         GameApp.startSpriteRendering();
-        GameApp.drawTexture("EuropeBG", xBg, yBg, drawWidth,  drawHeight );
+        GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
         GameApp.endSpriteRendering();
 
 
@@ -161,10 +156,10 @@ public class SideViewScreen extends ScalableGameScreen {
             GameApp.drawRect(movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, movingObstacle.h);
         GameApp.endShapeRendering();
 
-        player.x = GameApp.clamp(player.x, 0, getWorldWidth() - 100);
+//        player.x = GameApp.clamp(player.x, 0, getWorldWidth() - 100);
 
         GameApp.startSpriteRendering();
-        GameApp.drawTexture("chatGpt", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+        GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         for (Item item : worldItems) {
             if (!item.collected) {
                 GameApp.drawTexture("item", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);

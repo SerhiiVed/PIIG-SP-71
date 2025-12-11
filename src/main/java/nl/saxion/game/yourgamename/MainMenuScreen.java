@@ -43,18 +43,18 @@ public class MainMenuScreen extends ScalableGameScreen {
         GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "Start Game: Europe \n(Choose your level)", centerX, yStart, "yellow-500");
 
         // 3. Level
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. VERY HARD", centerX, yStart - 1 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. HARD", centerX, yStart - 2 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "3. NORMAL", centerX, yStart - 3 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "4. EASY", centerX, yStart - 4 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. SIDEVIEW", centerX, yStart - 1 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. TOPDOWN", centerX, yStart - 2 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "3. ...", centerX, yStart - 3 * ySpacing, "gray-500");
+        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "4. ...", centerX, yStart - 4 * ySpacing, "gray-500");
 
         GameApp.endSpriteRendering();
 
         // 4. Input Handling
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             GameApp.switchScreen("SideViewScreen");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            GameApp.switchScreen("YourGameScreen");
+        }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            GameApp.switchScreen("TopDownScreen");
         }
     }
 
