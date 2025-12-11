@@ -10,11 +10,14 @@ public class Part {
 
     boolean canDamage = false;
     boolean canMove = false;
+    boolean ownedByPlayer;
+
 
     Player playerInstance;
+    Boss bossInstance;
 
     public Part(float x, float y, float width, float height,
-                float damageAmount, Player player,
+                float damageAmount, Player player, Boss boss, boolean ownedByPlayer,
                 boolean canDamage, boolean canMove,
                 float velX, float velY)
     {
@@ -25,6 +28,8 @@ public class Part {
 
         this.damage = damageAmount;
         this.playerInstance = player;
+        this.bossInstance = boss;
+        this.ownedByPlayer = ownedByPlayer;
 
         this.canDamage = canDamage;
         this.canMove = canMove;
@@ -39,8 +44,22 @@ public class Part {
             return false;
         }
 
-        if (canDamage && playerInstance.CheckForHit(x, y, w, h)) {
+        if (canDamage && playerInstance.CheckForHit(x, y, w, h) && !ownedByPlayer) {
             playerInstance.UpdateHealth(damage, false);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean checkForBoss() {
+        if (bossInstance == null) {
+            System.err.println("Warning: bossInstance has not been assigned");
+            return false;
+        }
+
+        if (canDamage && bossInstance.CheckForHit(x, y, w, h) && ownedByPlayer) {
+            bossInstance.UpdateHealth(damage, false);
             return true;
         }
 
