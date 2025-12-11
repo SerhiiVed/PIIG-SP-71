@@ -177,7 +177,7 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.endShapeRendering();
 
         GameApp.startSpriteRendering();
-            GameApp.drawTexture("chatGpt", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+            GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             for (Item item : worldItems) {
                 if (!item.collected) {
                     GameApp.drawTexture("item", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
@@ -198,7 +198,6 @@ public class SideViewScreen extends ScalableGameScreen {
 
     @Override
     public void hide() {
-        GameApp.disposeTexture("chatGpt");
         GameApp.disposeTexture("item");
         GameApp.disposeTexture("basicFont");
         GameApp.stopMusic(MUSIC_NAME);
