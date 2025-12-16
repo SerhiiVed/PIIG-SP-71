@@ -8,7 +8,7 @@ public class Boss {
     float w;
     float h;
     float maxHealth = 100;
-    float currentHealth = maxHealth;
+    float currentHealth = maxHealth/2;
     Player playerToTarget;
     GlobalArrays partArray;
 

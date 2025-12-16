@@ -20,6 +20,9 @@ public class TopDownScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
+        GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
+        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
+
         GameApp.addFont("basic", "fonts/basic.ttf", 50);
         GameApp.addFont("basic2", "fonts/basic.ttf", 200);
 
@@ -28,8 +31,8 @@ public class TopDownScreen extends ScalableGameScreen {
         PlayerCharacter.x = getWorldWidth() / 2 - PlayerCharacter.TopDownWidth / 2;
         PlayerCharacter.y = 100;
 
-        BossCharacter.w = 80;
-        BossCharacter.h = 80;
+        BossCharacter.w =GameApp.getTextureWidth("EuropeBoss")/8;
+        BossCharacter.h = GameApp.getTextureHeight("EuropeBoss")/8;
         BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
         BossCharacter.y = getWorldHeight() / 2 - BossCharacter.h / 2;
         BossCharacter.playerToTarget = PlayerCharacter;
@@ -117,17 +120,10 @@ public class TopDownScreen extends ScalableGameScreen {
 
         // Draw elements
         GameApp.clearScreen("black");
-        GameApp.startShapeRenderingFilled();
-        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "violet-500");
-        GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
-
-        //draws all damage parts on the screen
-        for (Part dp : Parts.Parts) {
-            GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
-        }
-        GameApp.endShapeRendering();
-
         GameApp.startSpriteRendering();
+        GameApp.drawTexture("EuropeBossBG", 0, 0, GameApp.getTextureWidth("EuropeBossBG")/3, GameApp.getTextureHeight("EuropeBossBG")/3);
+        GameApp.drawTexture("EuropeBoss", BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h);
+
         GameApp.drawTextCentered("basic", "Player Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
         GameApp.drawTextCentered("basic", "Boss Health: " + BossCharacter.currentHealth, 1000, 600, "amber-500");
 
@@ -140,7 +136,15 @@ public class TopDownScreen extends ScalableGameScreen {
 
         }
         GameApp.endSpriteRendering();
+        GameApp.startShapeRenderingFilled();
+        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
+//        GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
 
+        //draws all damage parts on the screen
+        for (Part dp : Parts.Parts) {
+            GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
+        }
+        GameApp.endShapeRendering();
     }
 
     @Override
