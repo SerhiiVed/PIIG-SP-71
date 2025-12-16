@@ -19,6 +19,13 @@ public class SideViewScreen extends ScalableGameScreen {
         super(1280, 720);
     }
     public static final int PLAYER_SPEED = 600;
+
+    boolean isHyperDriving = false;
+    float hyperDriveTimer = 0f;
+    final float HYPER_DRIVE_DURATION = 5.0f;
+    final float SPEED_MULTIPLIER = 1.2f;
+    final float JUMP_MULTIPLIER = 1.2f;
+
     public static final int ITEM_SIZE= 100;
     public static final int PLAYER_SIZE= 130;
     float bgWidth;
@@ -34,6 +41,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         GameApp.addTexture("chatGpt", "textures/ChatGPT.png");
         GameApp.addTexture("item", "textures/item.PNG");
+        GameApp.addTexture("upgrade_hyper_drive", "textures/item_upgrade_hyper_drive.png");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
@@ -95,15 +103,22 @@ public class SideViewScreen extends ScalableGameScreen {
         inventory.clear();
         worldItems.clear();
 
-        for (int i = 0; i < 10; i++) {
-            Item coin = new Item();
-            coin.name = "Coin";
-            coin.x = GameApp.random(0, getWorldWidth() - ITEM_SIZE);
-            coin.y = GameApp.random(0,100);
-            coin.amount = 1;
 
-            worldItems.add(coin);
-        }
+        // 1. First item: on the crane's platform(X=1700, Y=220)
+        Item hyperDrive2 = new Item();
+        hyperDrive2.name = "upgrade_hyper_drive";
+        hyperDrive2.x = 1710; // calculation: 1700 + (120/2) - (100/2)
+        hyperDrive2.y = 240;  // on the obstacle : (220+20)
+        hyperDrive2.amount = 1;
+        worldItems.add(hyperDrive2);
+
+        // 2. Second item: on the trash bin (X=5700, Y=100)
+        Item hyperDrive3 = new Item();
+        hyperDrive3.name = "upgrade_hyper_drive";
+        hyperDrive3.x = 5710; // calculation: 5700 + (120/2) - (100/2)
+        hyperDrive3.y = 100;  // on the obstacle : (100)
+        hyperDrive3.amount = 1;
+        worldItems.add(hyperDrive3);
 
     }
 
@@ -120,12 +135,28 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.clearScreen();
 
 //          Player movement
+        if (isHyperDriving) {
+            hyperDriveTimer -= delta; // delta time만큼 타이머 감소
+            if (hyperDriveTimer <= 0) {
+                isHyperDriving = false; // 시간이 다 되면 부스트 해제
+                hyperDriveTimer = 0;
+            }
+        }
+
+        float currentSpeed = PLAYER_SPEED;
+        float jumpImpulse = 800;
+
+        if (isHyperDriving) {
+            currentSpeed *= SPEED_MULTIPLIER;
+            jumpImpulse *= JUMP_MULTIPLIER;
+        }
+
         if (GameApp.isKeyPressed(Input.Keys.A)) {
-            player.x -= PLAYER_SPEED * delta;
+            player.x -= currentSpeed * delta;
         } if (GameApp.isKeyPressed(Input.Keys.D)) {
-            player.x += PLAYER_SPEED * delta;
+            player.x += currentSpeed * delta;
         } if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
-            player.velocityY = 800;
+            player.velocityY = jumpImpulse;
             player.isOnGround = false;
         } if (player.velocityY < 0) {
             player.isOnGround = false;
@@ -180,7 +211,7 @@ public class SideViewScreen extends ScalableGameScreen {
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             for (Item item : worldItems) {
                 if (!item.collected) {
-                    GameApp.drawTexture("item", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
+                    GameApp.drawTexture("upgrade_hyper_drive", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
                 }
             }
             int y = 600;
@@ -212,6 +243,11 @@ public class SideViewScreen extends ScalableGameScreen {
 //
     public void collectItem(Item collectedItem) {
         collectedItem.collected = true;
+
+        if (collectedItem.name.equals("upgrade_hyper_drive")) {
+            isHyperDriving = true;
+            hyperDriveTimer = HYPER_DRIVE_DURATION;
+        }
         for (Item i : inventory) {
             if (i.name.equals(collectedItem.name)) {
                 i.amount++;
