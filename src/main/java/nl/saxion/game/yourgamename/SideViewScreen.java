@@ -279,6 +279,10 @@ public class SideViewScreen extends ScalableGameScreen {
 
         GameApp.endSpriteRendering();
 
+        if (player.x >= 8350.0) {
+            GameApp.switchScreen("TopDownScreen");
+        }
+
     }
 
     @Override

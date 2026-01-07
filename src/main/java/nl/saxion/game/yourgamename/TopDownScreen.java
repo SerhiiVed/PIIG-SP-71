@@ -14,6 +14,7 @@ public class TopDownScreen extends ScalableGameScreen {
     int attkCount = 1;
     float attkCooldown = 0f;
     private static final String MUSIC_NAME = "game2_theme_music";
+    boolean cutscene = false;
 
     public TopDownScreen() {
         super(1280, 720);
@@ -34,7 +35,7 @@ public class TopDownScreen extends ScalableGameScreen {
         BossCharacter.w = 80;
         BossCharacter.h = 80;
         BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
-        BossCharacter.y = getWorldHeight() / 2 - BossCharacter.h / 2;
+        BossCharacter.y = getWorldHeight();
         BossCharacter.playerToTarget = PlayerCharacter;
         BossCharacter.partArray = Parts;
 
@@ -46,9 +47,16 @@ public class TopDownScreen extends ScalableGameScreen {
     public void render(float delta) {
         super.render(delta);
         GameApp.updateTimers();
+        //Starting cutscene
+        if (!cutscene) {
+            BossCharacter.y -= 3;
+            if (BossCharacter.y <= getWorldHeight() / 2 - BossCharacter.h / 2) {
+                cutscene = true;
+            }
+        }
 
 
-        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f) {
+        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f && cutscene ) {
             float speed = 500;
 
             if (GameApp.isKeyPressed(Input.Keys.W)) {
@@ -75,12 +83,12 @@ public class TopDownScreen extends ScalableGameScreen {
             if (attkCooldown > 0) {
                 attkCooldown -= delta;
             }
-            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
+//            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
                 if (attkCooldown <= 0f) {
                     BossCharacter.shootAtSelf();
-                    attkCooldown = 0.25f;   // 1 second cooldown
+                    attkCooldown = 0.25f;
                 }
-            }
+//            }
 
             //Iterates through all damage parts and checks if the damage part has hit the player and cleans out of view parts
             Iterator<Part> iter = Parts.Parts.iterator();
