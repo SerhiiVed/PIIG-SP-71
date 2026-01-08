@@ -38,6 +38,7 @@ public class SideViewScreen extends ScalableGameScreen {
     float bgHeight;
     float bgScale;
     private static final String MUSIC_NAME = "game1_theme_music";
+    float endCutscene = 0;
 
     @Override
     public void show() {
@@ -239,6 +240,11 @@ public class SideViewScreen extends ScalableGameScreen {
         float drawWidth = bgWidth * bgScale;
         float drawHeight = bgHeight * bgScale;
 
+        if (player.x >= 8300.0 && endCutscene == 0) {
+            endCutscene = 1;
+        }
+
+
 
         GameApp.startSpriteRendering();
         GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
@@ -250,13 +256,11 @@ public class SideViewScreen extends ScalableGameScreen {
                     GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
                 }
             }
-        GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
-        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
+            GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+            GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
 
-             GameApp.endSpriteRendering();
-        GameApp.startShapeRenderingFilled();
+        GameApp.endSpriteRendering();
 
-        GameApp.endShapeRendering();
         GameApp.startSpriteRendering();
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
 
@@ -293,9 +297,15 @@ public class SideViewScreen extends ScalableGameScreen {
 
         GameApp.endSpriteRendering();
 
-        if (player.x >= 8350.0) {
-            GameApp.switchScreen("TopDownScreen");
+        GameApp.startShapeRenderingFilled();
+        if (endCutscene >= 1) {
+            endCutscene += 7;
+            GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, endCutscene, endCutscene, "black");
+            if (endCutscene > 1500) {
+                GameApp.switchScreen("TopDownScreen");
+            }
         }
+        GameApp.endShapeRendering();
 
     }
 

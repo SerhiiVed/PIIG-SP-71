@@ -15,6 +15,7 @@ public class TopDownScreen extends ScalableGameScreen {
     float attkCooldown = 0f;
     private static final String MUSIC_NAME = "game2_theme_music";
     boolean cutscene = false;
+    float fadeIn = 1500;
 
     public TopDownScreen() {
         super(1280, 720);
@@ -35,7 +36,7 @@ public class TopDownScreen extends ScalableGameScreen {
         PlayerCharacter.x = getWorldWidth() / 2 - PlayerCharacter.TopDownWidth / 2;
         PlayerCharacter.y = 100;
 
-        BossCharacter.w =GameApp.getTextureWidth("EuropeBoss")/8;
+        BossCharacter.w = GameApp.getTextureWidth("EuropeBoss")/8;
         BossCharacter.h = GameApp.getTextureHeight("EuropeBoss")/8;
         BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
         BossCharacter.y = getWorldHeight();
@@ -52,9 +53,13 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.updateTimers();
         //Starting cutscene
         if (!cutscene) {
-            BossCharacter.y -= 3;
-            if (BossCharacter.y <= getWorldHeight() / 2 - BossCharacter.h / 2) {
-                cutscene = true;
+            if (fadeIn > 1) {
+                fadeIn -= 7;
+            } else {
+                BossCharacter.y -= 3;
+                if (BossCharacter.y <= getWorldHeight() / 2 - BossCharacter.h / 2) {
+                    cutscene = true;
+                }
             }
         }
 
@@ -148,6 +153,9 @@ public class TopDownScreen extends ScalableGameScreen {
         }
         GameApp.endSpriteRendering();
         GameApp.startShapeRenderingFilled();
+        if (fadeIn > 1) {
+            GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, fadeIn, fadeIn, "black");
+        }
         GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
 //        GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
 
