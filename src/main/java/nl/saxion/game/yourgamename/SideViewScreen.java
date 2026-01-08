@@ -22,9 +22,15 @@ public class SideViewScreen extends ScalableGameScreen {
 
     boolean isHyperDriving = false;
     float hyperDriveTimer = 0f;
-    final float HYPER_DRIVE_DURATION = 5.0f;
+    final float HYPER_DRIVE_DURATION = 4.0f;
     final float SPEED_MULTIPLIER = 1.2f;
     final float JUMP_MULTIPLIER = 1.2f;
+
+    boolean isviruson = false;
+    float virusTimer = 0f;
+    final float VIRUS_DURATION = 4.0f;
+    final float SPEED_DIVIDER = 0.3f;
+    final float JUMP_DIVIDER = 0.3f;
 
     public static final int ITEM_SIZE= 100;
     public static final int PLAYER_SIZE= 130;
@@ -50,6 +56,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         GameApp.addTexture("item", "textures/item.PNG");
         GameApp.addTexture("upgrade_hyper_drive", "textures/item_upgrade_hyper_drive.png");
+        GameApp.addTexture("downgrade_virus", "textures/item_downgrade_virus.png");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
@@ -129,6 +136,22 @@ public class SideViewScreen extends ScalableGameScreen {
         hyperDrive3.amount = 1;
         worldItems.add(hyperDrive3);
 
+        // 3. Third item: on the head of robot (X=2450, Y=450)
+        Item hyperDrive4 = new Item();
+        hyperDrive4.name = "downgrade_virus";
+        hyperDrive4.x = 2600; // calculation: 2450 + (350/2) - (450/2) + 200
+        hyperDrive4.y = 450;  // on the obstacle : (450)
+        hyperDrive4.amount = 1;
+        worldItems.add(hyperDrive4);
+
+        // 4. Fourth item: on the Huge Hand (X=4550, Y=450)
+        Item hyperDrive5 = new Item();
+        hyperDrive5.name = "downgrade_virus";
+        hyperDrive5.x = 4550; // calculation: 4400 + (350/2) - (450/2) + 200
+        hyperDrive5.y = 450;  // on the obstacle : (450)
+        hyperDrive5.amount = 1;
+        worldItems.add(hyperDrive5);
+
     }
 
     @Override
@@ -145,10 +168,18 @@ public class SideViewScreen extends ScalableGameScreen {
 
 //          Player movement
         if (isHyperDriving) {
-            hyperDriveTimer -= delta; // delta time만큼 타이머 감소
+            hyperDriveTimer -= delta; // Timer Decreased for delta time
             if (hyperDriveTimer <= 0) {
-                isHyperDriving = false; // 시간이 다 되면 부스트 해제
+                isHyperDriving = false; // Boost done when the time is done
                 hyperDriveTimer = 0;
+            }
+        }
+
+        if (isviruson) {
+            virusTimer -= delta; // Timer Decreased for delta time
+            if (virusTimer <= 0) {
+                isviruson = false; // Boost done when the time is done
+                virusTimer = 0;
             }
         }
 
@@ -158,6 +189,11 @@ public class SideViewScreen extends ScalableGameScreen {
         if (isHyperDriving) {
             currentSpeed *= SPEED_MULTIPLIER;
             jumpImpulse *= JUMP_MULTIPLIER;
+        }
+
+        if (isviruson) {
+            currentSpeed *= SPEED_DIVIDER;
+            jumpImpulse *= JUMP_DIVIDER;
         }
 
         if (GameApp.isKeyPressed(Input.Keys.A)) {
@@ -223,18 +259,36 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.endShapeRendering();
         GameApp.startSpriteRendering();
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
-            for (Item item : worldItems) {
-                if (!item.collected) {
-                    GameApp.drawTexture("upgrade_hyper_drive", item.x  - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
+
+        for (Item item : worldItems) {
+            if (!item.collected) {
+
+                String textureId = null;
+
+                if (item.name.equals("upgrade_hyper_drive")) {
+                    textureId = "upgrade_hyper_drive";
+                }
+                else if (item.name.equals("downgrade_virus")) {
+                    textureId = "downgrade_virus";
+                }
+                if (textureId != null) {
+                    GameApp.drawTexture(
+                            textureId,
+                            item.x - camera.cameraX,
+                            item.y,
+                            ITEM_SIZE,
+                            ITEM_SIZE
+                    );
                 }
             }
+        }
             int y = 600;
             GameApp.drawText("basicFont", "Inventory", 50, y, Color.WHITE);
             y -= 50;
 
         for (Item i : inventory) {
-            GameApp.drawText("basicFont", i.name + " x" + i.amount, 50, y, Color.BLACK);
-            y += 22;
+            GameApp.drawText("basicFont", i.name + " x" + i.amount, 50, y, Color.WHITE);
+            y -= 35;
         }
 
         GameApp.endSpriteRendering();
@@ -261,6 +315,10 @@ public class SideViewScreen extends ScalableGameScreen {
         if (collectedItem.name.equals("upgrade_hyper_drive")) {
             isHyperDriving = true;
             hyperDriveTimer = HYPER_DRIVE_DURATION;
+        }
+        if (collectedItem.name.equals("downgrade_virus")) {
+            isviruson = true;
+            virusTimer = VIRUS_DURATION;
         }
         for (Item i : inventory) {
             if (i.name.equals(collectedItem.name)) {

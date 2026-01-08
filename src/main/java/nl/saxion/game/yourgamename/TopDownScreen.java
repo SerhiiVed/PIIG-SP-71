@@ -13,6 +13,7 @@ public class TopDownScreen extends ScalableGameScreen {
     GlobalArrays Parts = new GlobalArrays();
     int attkCount = 1;
     float attkCooldown = 0f;
+    private static final String MUSIC_NAME = "game2_theme_music";
 
     public TopDownScreen() {
         super(1280, 720);
@@ -25,6 +26,8 @@ public class TopDownScreen extends ScalableGameScreen {
 
         GameApp.addFont("basic", "fonts/basic.ttf", 50);
         GameApp.addFont("basic2", "fonts/basic.ttf", 200);
+        GameApp.addMusic(MUSIC_NAME, "audio/game2_theme.mp3");
+        GameApp.playMusic(MUSIC_NAME, true, 0.5f);
 
         PlayerCharacter.TopDownWidth = 40;
         PlayerCharacter.TopDownHeight = 40;
