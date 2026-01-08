@@ -41,11 +41,19 @@ public class SideViewScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
+        GameApp.addTexture("bush", "textures/bushObstacle.png");
+        GameApp.addTexture("hand", "textures/handObstacle.png");
+        GameApp.addTexture("head", "textures/headObstacle.png");
+        GameApp.addTexture("car", "textures/carObstacle.png");
+        GameApp.addTexture("tire1", "textures/tire1Obstacle.png");
+        GameApp.addTexture("tire2", "textures/tire2Obstacle.png");
+        GameApp.addTexture("trash", "textures/Trash.png");
+        GameApp.addTexture("cargo", "textures/LongCargo.png");
+
         GameApp.addTexture("EuropeBG", "textures/EuropeBG.PNG");
         GameApp.addSpriteSheet("characterEurope", "textures/characterEurope.png", 500, 650);
         GameApp.addAnimationFromSpritesheet("characterWalk", "characterEurope", 0.25f, true);
 
-        GameApp.addTexture("chatGpt", "textures/ChatGPT.png");
         GameApp.addTexture("item", "textures/item.PNG");
         GameApp.addTexture("upgrade_hyper_drive", "textures/item_upgrade_hyper_drive.png");
         GameApp.addTexture("downgrade_virus", "textures/item_downgrade_virus.png");
@@ -72,40 +80,41 @@ public class SideViewScreen extends ScalableGameScreen {
         movingObstacle.isMoving = true;
         movingObstacle.maxX = 4150;
         movingObstacle.minX = 3700;
+        movingObstacle.texture = "cargo";
 
         movingObstacle1 = new Obstacle();
         movingObstacle1.populateInstance(6650, 320, 120,20, player);
         movingObstacle1.isMoving = true;
         movingObstacle1.maxX = 7450;
         movingObstacle1.minX = 6750;
+        movingObstacle1.texture = "cargo";
 
-        addObstacle(600, 0, 70, 80);        /* bush */
-        addObstacle(900, 0, 100, 100);      /* tires */
-        addObstacle(1200, 0, 270, 80);      /* car */
-        addObstacle(2000, 0, 120, 100);     /* trash bin */
-        addObstacle(1700, 220, 120, 20);    /* crane's platform */
-        addObstacle(2450, 0, 350, 450);     /* head of robot */
-        addObstacle(1900, 360, 120, 20);    /* crane's platform */
+        addObstacle("bush",600, 0, 70, 80);        /* bush */
+        addObstacle("tire1", 900, 0, 100, 100);      /* tires */
+        addObstacle("car", 1200, 0, 270, 80);      /* car */
+        addObstacle("trash",2000, 0, 120, 100);     /* trash bin */
+        addObstacle("cargo",1700, 220, 120, 20);    /* crane's platform */
+        addObstacle("head",2450, 0, 350, 450);     /* head of robot */
+        addObstacle("cargo",1900, 360, 120, 20);    /* crane's platform */
 
-        addObstacle(3300, 180, 120, 20);    /* crane's platform */
-        addObstacle(3600, 320, 120, 20);    /* crane's platform */
-        addObstacle(3400, 470, 120, 20);    /* crane's platform */
+        addObstacle("cargo",3300, 180, 120, 20);    /* crane's platform */
+        addObstacle("cargo",3600, 320, 120, 20);    /* crane's platform */
+        addObstacle("cargo",3400, 470, 120, 20);    /* crane's platform */
 
-        addObstacle(4100, 0, 100, 100);     /* tires */
-        addObstacle(3870, 220, 120, 20);    /* crane's platform */
-        addObstacle(4400, 0, 350, 450);     /* huge hand */
+        addObstacle("tire2",4100, 0, 100, 100);     /* tires */
+        addObstacle("cargo",3870, 220, 120, 20);    /* crane's platform */
+        addObstacle("hand",4400, 0, 350, 450);     /* huge hand */
 
-        addObstacle(5100, 200, 120, 20);    /* crane's platform */
-        addObstacle(5400, 300, 120, 20);    /* crane's platform */
-        addObstacle(5700, 0, 120, 100);     /* trash bin */
-        addObstacle(6100, 0, 270, 80);      /* car */
+        addObstacle("cargo",5100, 200, 120, 20);    /* crane's platform */
+        addObstacle("cargo",5400, 300, 120, 20);    /* crane's platform */
+        addObstacle("trash",5700, 0, 120, 100);     /* trash bin */
+        addObstacle("car", 6100, 0, 270, 80);      /* car */
 
-        addObstacle(6580, 180, 120, 20);    /* crane's platform */
-        addObstacle(6800, 460, 120, 20);    /* crane's platform */
-        addObstacle(6400, 550, 120, 20);    /* crane's platform with some item on top */
-        addObstacle(7600, 450, 120, 20);    /* crane's platform */
-        addObstacle(8000, 0, 350, 450);     /* head of robot */
-
+        addObstacle("cargo",6580, 180, 120, 20);    /* crane's platform */
+        addObstacle("cargo",6800, 460, 120, 20);    /* crane's platform */
+        addObstacle("cargo",6400, 550, 120, 20);    /* crane's platform with some item on top */
+        addObstacle("cargo",7600, 450, 120, 20);    /* crane's platform */
+        addObstacle("head",8000, 0, 350, 450);     /* head of robot */
 
         inventory.clear();
         worldItems.clear();
@@ -233,16 +242,21 @@ public class SideViewScreen extends ScalableGameScreen {
 
         GameApp.startSpriteRendering();
         GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
-        GameApp.endSpriteRendering();
 
-        GameApp.startShapeRenderingFilled();
             for (Obstacle ob: obstacles) {
-                GameApp.drawRect(ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                if (ob.texture.equals("cargo")){
+                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
+                } else {
+                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                }
             }
-            GameApp.drawRect(movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, movingObstacle.h);
-            GameApp.drawRect(movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, movingObstacle1.h);
-        GameApp.endShapeRendering();
+        GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
 
+             GameApp.endSpriteRendering();
+        GameApp.startShapeRenderingFilled();
+
+        GameApp.endShapeRendering();
         GameApp.startSpriteRendering();
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
 
@@ -284,7 +298,7 @@ public class SideViewScreen extends ScalableGameScreen {
     @Override
     public void hide() {
         GameApp.disposeTexture("item");
-        GameApp.disposeTexture("basicFont");
+        GameApp.disposeFont("basicFont");
         GameApp.stopMusic(MUSIC_NAME);
         GameApp.disposeMusic(MUSIC_NAME);
         GameApp.disposeTexture("EuropeBG");
@@ -335,8 +349,9 @@ public class SideViewScreen extends ScalableGameScreen {
         }
     }
 
-    public void addObstacle (int x, int y, int w, int h) {
+    public void addObstacle (String texture, int x, int y, int w, int h) {
         Obstacle item = new Obstacle();
+        item.texture=texture;
         item.populateInstance(x, y, w, h, player);
         obstacles.add(item);
     }

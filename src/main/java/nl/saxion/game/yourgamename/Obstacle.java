@@ -9,6 +9,7 @@ public class Obstacle {
     int y;
     int maxX;
     int minX;
+    String texture;
     boolean isMoving = false;
     Player playerInstance;
     boolean isMovingRight = true;
