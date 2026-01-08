@@ -1,5 +1,6 @@
 package nl.saxion.game.yourgamename;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import nl.saxion.gameapp.GameApp;
@@ -241,23 +242,17 @@ public class SideViewScreen extends ScalableGameScreen {
 
 
         GameApp.startSpriteRendering();
-        GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
+            GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
 
-            for (Obstacle ob: obstacles) {
-                if (ob.texture.equals("cargo")){
-                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
-                } else {
-                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                for (Obstacle ob: obstacles) {
+                    if (ob.texture.equals("cargo")){
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
+                    } else {
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                    }
                 }
-            }
-        GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+            GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
         GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
-
-             GameApp.endSpriteRendering();
-        GameApp.startShapeRenderingFilled();
-
-        GameApp.endShapeRendering();
-        GameApp.startSpriteRendering();
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
 
         for (Item item : worldItems) {
