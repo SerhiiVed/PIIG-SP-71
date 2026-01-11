@@ -31,6 +31,8 @@ public class TopDownScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
+        GameApp.addFont("tech300", "fonts/ShareTech-Regular.ttf", 300);
+
         GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
         GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
 
@@ -145,11 +147,11 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.drawTexture("EuropeBoss", BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h);
 
         if (PlayerCharacter.currentHealth == 0f) {
-            GameApp.drawTextCentered("basic2", "You Died", getWorldWidth()/2, getWorldHeight()/2, "red-600");
+            GameApp.drawTextCentered("tech300", "You Died :(", getWorldWidth()/2, getWorldHeight()/2, "red-600");
 
         }
         if (BossCharacter.currentHealth == 0f) {
-            GameApp.drawTextCentered("basic2", "You Won", getWorldWidth()/2, getWorldHeight()/2, "green-500");
+            GameApp.drawTextCentered("tech300", "!!! You Won !!!", getWorldWidth()/2, getWorldHeight()/2, "green-500");
 
         }
         GameApp.endSpriteRendering();

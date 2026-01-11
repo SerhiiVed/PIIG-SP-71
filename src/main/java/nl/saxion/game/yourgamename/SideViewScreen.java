@@ -59,8 +59,8 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addAnimationFromSpritesheet("characterWalk", "characterEurope", 0.25f, true);
 
         GameApp.addTexture("item", "textures/item.PNG");
-        GameApp.addTexture("upgrade_hyper_drive", "textures/item_upgrade_hyper_drive.png");
-        GameApp.addTexture("downgrade_virus", "textures/item_downgrade_virus.png");
+        GameApp.addTexture("Hyper-drive", "textures/item_upgrade_hyper_drive.png");
+        GameApp.addTexture("Virus", "textures/item_downgrade_virus.png");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
@@ -264,10 +264,10 @@ public class SideViewScreen extends ScalableGameScreen {
                 String textureId = null;
 
                 if (item.name.equals("Hyper-drive")) {
-                    textureId = "upgrade_hyper_drive";
+                    textureId = "Hyper-drive";
                 }
                 else if (item.name.equals("Virus")) {
-                    textureId = "downgrade_virus";
+                    textureId = "Virus";
                 }
                 if (textureId != null) {
                     GameApp.drawTexture(
@@ -312,11 +312,11 @@ public class SideViewScreen extends ScalableGameScreen {
     public void collectItem(Item collectedItem) {
         collectedItem.collected = true;
 
-        if (collectedItem.name.equals("upgrade_hyper_drive")) {
+        if (collectedItem.name.equals("Hyper-drive")) {
             isHyperDriving = true;
             hyperDriveTimer = HYPER_DRIVE_DURATION;
         }
-        if (collectedItem.name.equals("downgrade_virus")) {
+        if (collectedItem.name.equals("Virus")) {
             isviruson = true;
             virusTimer = VIRUS_DURATION;
         }
