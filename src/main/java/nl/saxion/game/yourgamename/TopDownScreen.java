@@ -144,9 +144,6 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.drawTexture("EuropeBossBG", 0, 0, GameApp.getTextureWidth("EuropeBossBG")/3, GameApp.getTextureHeight("EuropeBossBG")/3);
         GameApp.drawTexture("EuropeBoss", BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h);
 
-        GameApp.drawTextCentered("basic", "Player Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
-        GameApp.drawTextCentered("basic", "Boss Health: " + BossCharacter.currentHealth, 1000, 600, "amber-500");
-
         if (PlayerCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("basic2", "You Died", getWorldWidth()/2, getWorldHeight()/2, "red-600");
 
