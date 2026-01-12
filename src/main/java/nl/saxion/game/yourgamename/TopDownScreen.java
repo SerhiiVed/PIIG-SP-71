@@ -117,12 +117,12 @@ public class TopDownScreen extends ScalableGameScreen {
             if (attkCooldown > 0) {
                 attkCooldown -= delta;
             }
-            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
+//            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
                 if (attkCooldown <= 0f) {
                     BossCharacter.shootAtSelf();
                     attkCooldown = 0.25f;   // 1 second cooldown
                 }
-            }
+//            }
 
             //Iterates through all damage parts and checks if the damage part has hit the player and cleans out of view parts
             Iterator<Part> iter = Parts.Parts.iterator();
