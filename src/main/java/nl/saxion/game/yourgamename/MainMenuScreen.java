@@ -20,6 +20,8 @@ public class MainMenuScreen extends ScalableGameScreen {
     @Override
     public void show() {
 
+        GameApp.addTexture("background", "textures/mainMenuBG.png");
+
         GameApp.addFont(TITLE_FONT_NAME, "fonts/basic.ttf", 60);
         GameApp.addFont(MENU_FONT_NAME, "fonts/basic.ttf", 30);
         GameApp.addMusic(MUSIC_NAME, "audio/menu_theme.mp3");
@@ -31,22 +33,15 @@ public class MainMenuScreen extends ScalableGameScreen {
         GameApp.clearScreen();
 
         GameApp.startSpriteRendering();
+        GameApp.drawTexture("background", 0,0, (GameApp.getTextureWidth("background")/5)+30, GameApp.getTextureHeight("background")/5);
 
         int centerX = (int)getWorldWidth() / 2 + CENTER_ADJUSTMENT;
         int yStart = 300;
         int ySpacing = 50;
 
-        // 1. Title Drawing=
-        GameApp.drawTextHorizontallyCentered(TITLE_FONT_NAME, "DEUX EX MACHINA", centerX, 375, "red-700");
-
-        // 2. Menu List Drawing
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "Start Game: Europe \n(Choose your level)", centerX, yStart, "yellow-500");
-
-        // 3. Level
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. SIDEVIEW", centerX, yStart - 1 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. TOPDOWN", centerX, yStart - 2 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "3. ...", centerX, yStart - 3 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "4. ...", centerX, yStart - 4 * ySpacing, "gray-500");
+         // 3. Level
+//        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. SIDEVIEW", centerX, yStart - 1 * ySpacing, "gray-500");
+//        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. TOPDOWN", centerX, yStart - 2 * ySpacing, "gray-500");
 
         GameApp.endSpriteRendering();
 
@@ -67,6 +62,7 @@ public class MainMenuScreen extends ScalableGameScreen {
         GameApp.disposeFont(MENU_FONT_NAME);
         GameApp.stopMusic(MUSIC_NAME);
         GameApp.disposeMusic(MUSIC_NAME);
+        GameApp.disposeTexture("background");
     }
 
     @Override
