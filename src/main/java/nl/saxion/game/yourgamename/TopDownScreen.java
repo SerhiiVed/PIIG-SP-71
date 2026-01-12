@@ -90,7 +90,7 @@ public class TopDownScreen extends ScalableGameScreen {
         bossHealthCurrentWidth = bossHealthSegment * BossCharacter.currentHealth;
 
 
-        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f) {
+        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f && cutscene) {
             float speed = 500;
 
             if (GameApp.isKeyPressed(Input.Keys.W)) {
@@ -178,9 +178,6 @@ public class TopDownScreen extends ScalableGameScreen {
         }
         GameApp.endSpriteRendering();
         GameApp.startShapeRenderingFilled();
-        if (fadeIn > 1) {
-            GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, fadeIn, fadeIn, "black");
-        }
             GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
 
             GameApp.drawRect(healthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
@@ -189,6 +186,9 @@ public class TopDownScreen extends ScalableGameScreen {
             GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
             GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, bossHealthCurrentWidth, healthBarsHeight, Color.GREEN);
 
+            if (fadeIn > 1) {
+                GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, fadeIn, fadeIn, "black");
+            }
             //draws all damage parts on the screen
             for (Part dp : Parts.Parts) {
                 GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
