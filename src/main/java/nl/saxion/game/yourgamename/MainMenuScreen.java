@@ -40,8 +40,8 @@ public class MainMenuScreen extends ScalableGameScreen {
         int ySpacing = 50;
 
          // 3. Level
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. SIDEVIEW", centerX, yStart - 1 * ySpacing, "gray-500");
-        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. TOPDOWN", centerX, yStart - 2 * ySpacing, "gray-500");
+//        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "1. SIDEVIEW", centerX, yStart - 1 * ySpacing, "gray-500");
+//        GameApp.drawTextHorizontallyCentered(MENU_FONT_NAME, "2. TOPDOWN", centerX, yStart - 2 * ySpacing, "gray-500");
 
         GameApp.endSpriteRendering();
 
