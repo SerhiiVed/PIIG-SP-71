@@ -1,5 +1,6 @@
 package nl.saxion.game.yourgamename;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import nl.saxion.gameapp.GameApp;
@@ -42,6 +43,9 @@ public class SideViewScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
+        GameApp.addFont("tech100", "fonts/ShareTech-Regular.ttf", 100);
+        GameApp.addFont("tech50", "fonts/ShareTech-Regular.ttf", 70);
+
         GameApp.addTexture("bush", "textures/bushObstacle.png");
         GameApp.addTexture("hand", "textures/handObstacle.png");
         GameApp.addTexture("head", "textures/headObstacle.png");
@@ -56,8 +60,8 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addAnimationFromSpritesheet("characterWalk", "characterEurope", 0.25f, true);
 
         GameApp.addTexture("item", "textures/item.PNG");
-        GameApp.addTexture("upgrade_hyper_drive", "textures/item_upgrade_hyper_drive.png");
-        GameApp.addTexture("downgrade_virus", "textures/item_downgrade_virus.png");
+        GameApp.addTexture("Hyper-drive", "textures/item_upgrade_hyper_drive.png");
+        GameApp.addTexture("Virus", "textures/item_downgrade_virus.png");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
@@ -123,7 +127,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         // 1. First item: on the crane's platform(X=1700, Y=220)
         Item hyperDrive2 = new Item();
-        hyperDrive2.name = "upgrade_hyper_drive";
+        hyperDrive2.name = "Hyper-drive";
         hyperDrive2.x = 1710; // calculation: 1700 + (120/2) - (100/2)
         hyperDrive2.y = 240;  // on the obstacle : (220+20)
         hyperDrive2.amount = 1;
@@ -131,7 +135,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         // 2. Second item: on the trash bin (X=5700, Y=100)
         Item hyperDrive3 = new Item();
-        hyperDrive3.name = "upgrade_hyper_drive";
+        hyperDrive3.name = "Hyper-drive";
         hyperDrive3.x = 5710; // calculation: 5700 + (120/2) - (100/2)
         hyperDrive3.y = 100;  // on the obstacle : (100)
         hyperDrive3.amount = 1;
@@ -139,7 +143,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         // 3. Third item: on the head of robot (X=2450, Y=450)
         Item hyperDrive4 = new Item();
-        hyperDrive4.name = "downgrade_virus";
+        hyperDrive4.name = "Virus";
         hyperDrive4.x = 2600; // calculation: 2450 + (350/2) - (450/2) + 200
         hyperDrive4.y = 450;  // on the obstacle : (450)
         hyperDrive4.amount = 1;
@@ -147,7 +151,7 @@ public class SideViewScreen extends ScalableGameScreen {
 
         // 4. Fourth item: on the Huge Hand (X=4550, Y=450)
         Item hyperDrive5 = new Item();
-        hyperDrive5.name = "downgrade_virus";
+        hyperDrive5.name = "Virus";
         hyperDrive5.x = 4550; // calculation: 4400 + (350/2) - (450/2) + 200
         hyperDrive5.y = 450;  // on the obstacle : (450)
         hyperDrive5.amount = 1;
@@ -247,21 +251,17 @@ public class SideViewScreen extends ScalableGameScreen {
 
 
         GameApp.startSpriteRendering();
-        GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
+            GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
 
-            for (Obstacle ob: obstacles) {
-                if (ob.texture.equals("cargo")){
-                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
-                } else {
-                    GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                for (Obstacle ob: obstacles) {
+                    if (ob.texture.equals("cargo")){
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
+                    } else {
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                    }
                 }
-            }
             GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
-            GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
-
-        GameApp.endSpriteRendering();
-
-        GameApp.startSpriteRendering();
+        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
             GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
 
         for (Item item : worldItems) {
@@ -269,11 +269,11 @@ public class SideViewScreen extends ScalableGameScreen {
 
                 String textureId = null;
 
-                if (item.name.equals("upgrade_hyper_drive")) {
-                    textureId = "upgrade_hyper_drive";
+                if (item.name.equals("Hyper-drive")) {
+                    textureId = "Hyper-drive";
                 }
-                else if (item.name.equals("downgrade_virus")) {
-                    textureId = "downgrade_virus";
+                else if (item.name.equals("Virus")) {
+                    textureId = "Virus";
                 }
                 if (textureId != null) {
                     GameApp.drawTexture(
@@ -287,11 +287,11 @@ public class SideViewScreen extends ScalableGameScreen {
             }
         }
             int y = 600;
-            GameApp.drawText("basicFont", "Inventory", 50, y, Color.WHITE);
+            GameApp.drawText("tech100", "Inventory", 50, y, Color.WHITE);
             y -= 50;
 
         for (Item i : inventory) {
-            GameApp.drawText("basicFont", i.name + " x" + i.amount, 50, y, Color.WHITE);
+            GameApp.drawText("tech50", i.name + " x" + i.amount, 50, y, Color.WHITE);
             y -= 35;
         }
 
@@ -313,6 +313,8 @@ public class SideViewScreen extends ScalableGameScreen {
     public void hide() {
         GameApp.disposeTexture("item");
         GameApp.disposeFont("basicFont");
+        GameApp.disposeFont("tech50");
+        GameApp.disposeFont("tech100");
         GameApp.stopMusic(MUSIC_NAME);
         GameApp.disposeMusic(MUSIC_NAME);
         GameApp.disposeTexture("EuropeBG");
@@ -326,11 +328,11 @@ public class SideViewScreen extends ScalableGameScreen {
     public void collectItem(Item collectedItem) {
         collectedItem.collected = true;
 
-        if (collectedItem.name.equals("upgrade_hyper_drive")) {
+        if (collectedItem.name.equals("Hyper-drive")) {
             isHyperDriving = true;
             hyperDriveTimer = HYPER_DRIVE_DURATION;
         }
-        if (collectedItem.name.equals("downgrade_virus")) {
+        if (collectedItem.name.equals("Virus")) {
             isviruson = true;
             virusTimer = VIRUS_DURATION;
         }

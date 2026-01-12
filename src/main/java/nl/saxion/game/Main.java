@@ -2,6 +2,7 @@ package nl.saxion.game;
 
 //import nl.saxion.game.yourgamename.DamageShowcaseScreen;
 import nl.saxion.game.yourgamename.SideViewScreen;
+import nl.saxion.game.yourgamename.IntroScreen;
 import nl.saxion.game.yourgamename.YourGameScreen;
 import nl.saxion.game.yourgamename.MainMenuScreen;
 import nl.saxion.game.yourgamename.TopDownScreen;
@@ -11,6 +12,7 @@ public class Main {
     public static void main(String[] args) {
         // Add screens
         GameApp.addScreen("MainMenuScreen", new MainMenuScreen());
+        GameApp.addScreen("IntroScreen", new IntroScreen());
         GameApp.addScreen("YourGameScreen", new YourGameScreen());
         GameApp.addScreen("SideViewScreen", new SideViewScreen());
 //        GameApp.addScreen("DamageShowcaseScreen", new DamageShowcaseScreen());
