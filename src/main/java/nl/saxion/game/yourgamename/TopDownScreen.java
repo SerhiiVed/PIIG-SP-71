@@ -24,6 +24,8 @@ public class TopDownScreen extends ScalableGameScreen {
     int attkCount = 1;
     float attkCooldown = 0f;
     private static final String MUSIC_NAME = "game2_theme_music";
+    boolean cutscene = false;
+    float fadeIn = 1500;
 
     public TopDownScreen() {
         super(1280, 720);
@@ -54,7 +56,7 @@ public class TopDownScreen extends ScalableGameScreen {
 
 
         BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
-        BossCharacter.y = getWorldHeight() / 2 - BossCharacter.h / 2;
+        BossCharacter.y = getWorldHeight();
         BossCharacter.playerToTarget = PlayerCharacter;
         BossCharacter.partArray = Parts;
 
@@ -68,6 +70,17 @@ public class TopDownScreen extends ScalableGameScreen {
 
         super.render(delta);
         GameApp.updateTimers();
+        //Starting cutscene
+        if (!cutscene) {
+            if (fadeIn > 1) {
+                fadeIn -= 7;
+            } else {
+                BossCharacter.y -= 3;
+                if (BossCharacter.y <= getWorldHeight() / 2 - BossCharacter.h / 2) {
+                    cutscene = true;
+                }
+            }
+        }
 
 //        Health bar
         float healthSegment = healthBarsWidth / PlayerCharacter.maxHealth;
@@ -77,7 +90,7 @@ public class TopDownScreen extends ScalableGameScreen {
         bossHealthCurrentWidth = bossHealthSegment * BossCharacter.currentHealth;
 
 
-        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f) {
+        if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f && cutscene) {
             float speed = 500;
 
             if (GameApp.isKeyPressed(Input.Keys.W)) {
@@ -104,12 +117,12 @@ public class TopDownScreen extends ScalableGameScreen {
             if (attkCooldown > 0) {
                 attkCooldown -= delta;
             }
-            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
+//            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
                 if (attkCooldown <= 0f) {
                     BossCharacter.shootAtSelf();
                     attkCooldown = 0.25f;   // 1 second cooldown
                 }
-            }
+//            }
 
             //Iterates through all damage parts and checks if the damage part has hit the player and cleans out of view parts
             Iterator<Part> iter = Parts.Parts.iterator();
@@ -173,6 +186,9 @@ public class TopDownScreen extends ScalableGameScreen {
             GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
             GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, bossHealthCurrentWidth, healthBarsHeight, Color.GREEN);
 
+            if (fadeIn > 1) {
+                GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, fadeIn, fadeIn, "black");
+            }
             //draws all damage parts on the screen
             for (Part dp : Parts.Parts) {
                 GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);

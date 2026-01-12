@@ -39,6 +39,7 @@ public class SideViewScreen extends ScalableGameScreen {
     float bgHeight;
     float bgScale;
     private static final String MUSIC_NAME = "game1_theme_music";
+    float endCutscene = 0;
 
     @Override
     public void show() {
@@ -243,6 +244,11 @@ public class SideViewScreen extends ScalableGameScreen {
         float drawWidth = bgWidth * bgScale;
         float drawHeight = bgHeight * bgScale;
 
+        if (player.x >= 8300.0 && endCutscene == 0) {
+            endCutscene = 1;
+        }
+
+
 
         GameApp.startSpriteRendering();
             GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
@@ -290,6 +296,16 @@ public class SideViewScreen extends ScalableGameScreen {
         }
 
         GameApp.endSpriteRendering();
+
+        GameApp.startShapeRenderingFilled();
+        if (endCutscene >= 1) {
+            endCutscene += 7;
+            GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, endCutscene, endCutscene, "black");
+            if (endCutscene > 1500) {
+                GameApp.switchScreen("TopDownScreen");
+            }
+        }
+        GameApp.endShapeRendering();
 
     }
 
