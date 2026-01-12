@@ -1,6 +1,7 @@
 package nl.saxion.game.yourgamename;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import nl.saxion.gameapp.GameApp;
 import nl.saxion.gameapp.screens.ScalableGameScreen;
 import nl.saxion.gameapp.utils.Timer;
@@ -8,6 +9,15 @@ import nl.saxion.gameapp.utils.Timer;
 import java.util.Iterator;
 
 public class TopDownScreen extends ScalableGameScreen {
+    float healthBarX = 20;
+    float healthBarY = 20;
+    float healthBarsWidth = 300;
+    float healthBarsHeight = 50;
+    float currentHealthWidth = 300;
+
+    float bossHealthBarX = 400;
+    float bossHealthCurrentWidth = 300;
+
     Player PlayerCharacter = new Player();
     Boss BossCharacter = new Boss();
     GlobalArrays Parts = new GlobalArrays();
@@ -23,6 +33,8 @@ public class TopDownScreen extends ScalableGameScreen {
     public void show() {
         GameApp.addSpriteSheet("boss", "textures/bossSpriteSheet.png", 2798, 2160);
         GameApp.addAnimationFromSpritesheet("bossShoot", "boss", 0.25f, true);
+
+        GameApp.addFont("tech300", "fonts/ShareTech-Regular.ttf", 300);
 
         GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
 //        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
@@ -56,6 +68,13 @@ public class TopDownScreen extends ScalableGameScreen {
 
         super.render(delta);
         GameApp.updateTimers();
+
+//        Health bar
+        float healthSegment = healthBarsWidth / PlayerCharacter.maxHealth;
+        currentHealthWidth = healthSegment * PlayerCharacter.currentHealth;
+
+        float bossHealthSegment = healthBarsWidth / BossCharacter.maxHealth;
+        bossHealthCurrentWidth = bossHealthSegment * BossCharacter.currentHealth;
 
 
         if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f) {
@@ -136,26 +155,28 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.drawAnimation("bossShoot",  BossCharacter.x, BossCharacter.y,  BossCharacter.w, BossCharacter.h);
 
 
-        GameApp.drawTextCentered("basic", "Player Health: " + PlayerCharacter.currentHealth, 200, 600, "amber-500");
-        GameApp.drawTextCentered("basic", "Boss Health: " + BossCharacter.currentHealth, 1000, 600, "amber-500");
-
         if (PlayerCharacter.currentHealth == 0f) {
-            GameApp.drawTextCentered("basic2", "You Died", getWorldWidth()/2, getWorldHeight()/2, "red-600");
+            GameApp.drawTextCentered("tech300", "You Died :(", getWorldWidth()/2, getWorldHeight()/2, "red-600");
 
         }
         if (BossCharacter.currentHealth == 0f) {
-            GameApp.drawTextCentered("basic2", "You Won", getWorldWidth()/2, getWorldHeight()/2, "green-500");
+            GameApp.drawTextCentered("tech300", "!!! You Won !!!", getWorldWidth()/2, getWorldHeight()/2, "green-500");
 
         }
         GameApp.endSpriteRendering();
         GameApp.startShapeRenderingFilled();
-        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
-//        GameApp.drawRect(BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h, "red-500");
+            GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
 
-        //draws all damage parts on the screen
-        for (Part dp : Parts.Parts) {
-            GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
-        }
+            GameApp.drawRect(healthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
+            GameApp.drawRect(healthBarX, GameApp.getWorldHeight() - 80, currentHealthWidth, healthBarsHeight, Color.GREEN);
+
+            GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
+            GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, bossHealthCurrentWidth, healthBarsHeight, Color.GREEN);
+
+            //draws all damage parts on the screen
+            for (Part dp : Parts.Parts) {
+                GameApp.drawRect(dp.x, dp.y, dp.w, dp.h, dp.color);
+            }
         GameApp.endShapeRendering();
     }
 
