@@ -31,10 +31,13 @@ public class TopDownScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
+        GameApp.addSpriteSheet("boss", "textures/bossSpriteSheet.png", 2798, 2160);
+        GameApp.addAnimationFromSpritesheet("bossShoot", "boss", 0.25f, true);
+
         GameApp.addFont("tech300", "fonts/ShareTech-Regular.ttf", 300);
 
         GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
-        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
+//        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
 
         GameApp.addFont("basic", "fonts/basic.ttf", 50);
         GameApp.addFont("basic2", "fonts/basic.ttf", 200);
@@ -46,8 +49,10 @@ public class TopDownScreen extends ScalableGameScreen {
         PlayerCharacter.x = getWorldWidth() / 2 - PlayerCharacter.TopDownWidth / 2;
         PlayerCharacter.y = 100;
 
-        BossCharacter.w =GameApp.getTextureWidth("EuropeBoss")/8;
-        BossCharacter.h = GameApp.getTextureHeight("EuropeBoss")/8;
+        BossCharacter.w = 480;
+        BossCharacter.h = 340;
+
+
         BossCharacter.x = getWorldWidth() / 2 - BossCharacter.w / 2;
         BossCharacter.y = getWorldHeight() / 2 - BossCharacter.h / 2;
         BossCharacter.playerToTarget = PlayerCharacter;
@@ -59,6 +64,8 @@ public class TopDownScreen extends ScalableGameScreen {
 
     @Override
     public void render(float delta) {
+        GameApp.updateAnimation("bossShoot");
+
         super.render(delta);
         GameApp.updateTimers();
 
@@ -144,7 +151,9 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.clearScreen("black");
         GameApp.startSpriteRendering();
         GameApp.drawTexture("EuropeBossBG", 0, 0, GameApp.getTextureWidth("EuropeBossBG")/3, GameApp.getTextureHeight("EuropeBossBG")/3);
-        GameApp.drawTexture("EuropeBoss", BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h);
+//        GameApp.drawTexture("EuropeBoss", BossCharacter.x, BossCharacter.y, BossCharacter.w, BossCharacter.h);
+        GameApp.drawAnimation("bossShoot",  BossCharacter.x, BossCharacter.y,  BossCharacter.w, BossCharacter.h);
+
 
         if (PlayerCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("tech300", "You Died :(", getWorldWidth()/2, getWorldHeight()/2, "red-600");
