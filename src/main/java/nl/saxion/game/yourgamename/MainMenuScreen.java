@@ -46,8 +46,8 @@ public class MainMenuScreen extends ScalableGameScreen {
         GameApp.endSpriteRendering();
 
         // 4. Input Handling
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            GameApp.switchScreen("SideViewScreen");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            GameApp.switchScreen("IntroScreen");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             GameApp.switchScreen("TopDownScreen");
         }
