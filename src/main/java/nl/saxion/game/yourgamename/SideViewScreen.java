@@ -204,9 +204,18 @@ public class SideViewScreen extends ScalableGameScreen {
         float jumpImpulse = 800;
         if (isHyperDriving) { currentSpeed *= SPEED_MULTIPLIER; jumpImpulse *= JUMP_MULTIPLIER; }
         if (isviruson) { currentSpeed *= SPEED_DIVIDER; jumpImpulse *= JUMP_DIVIDER; }
+        isWalkingForward = false;
+        isWalkingBackward = false;
 
-        if (GameApp.isKeyPressed(Input.Keys.A)) player.x -= currentSpeed * delta;
-        if (GameApp.isKeyPressed(Input.Keys.D)) player.x += currentSpeed * delta;
+        if (GameApp.isKeyPressed(Input.Keys.A)) {
+            player.x -= currentSpeed * delta;
+            isWalkingBackward = true;
+            lastForward = false;
+        } else if (GameApp.isKeyPressed(Input.Keys.D)) {
+            player.x += currentSpeed * delta;
+            isWalkingForward = true;
+            lastForward = true;
+        }
         if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
             player.velocityY = jumpImpulse;
             player.isOnGround = false;
@@ -242,46 +251,33 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.startSpriteRendering();
         float drawWidth = bgWidth * bgScale;
         float drawHeight = bgHeight * bgScale;
+        // 1. 배경 및 장애물
         GameApp.drawTexture("EuropeBG", -300 - camera.cameraX, 0, drawWidth, drawHeight);
-
         for (Obstacle ob : obstacles) {
             GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.texture.equals("cargo") ? 600 : ob.h);
         }
+        GameApp.drawTexture(movingObstacle.texture, movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+        GameApp.drawTexture(movingObstacle1.texture, movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
 
-
-
-        GameApp.startSpriteRendering();
-            GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
-
-                for (Obstacle ob: obstacles) {
-                    if (ob.texture.equals("cargo")){
-                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
-                    } else {
-                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
-                    }
-                }
-            GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
-        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
-        if  (isWalkingForward) {
-            System.out.println("yes");
+        // 2. 캐릭터 애니메이션/텍스처 결정 로직 🎯
+        if (isWalkingForward) {
             GameApp.drawAnimation("characterWalkForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         } else if (isWalkingBackward) {
             GameApp.drawAnimation("characterWalkBackward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         } else {
+            // 정지 상태 (Idle)
             if (lastForward) {
                 GameApp.drawTexture("characterEuropeLookForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             } else {
-                GameApp.drawTexture("CharacterEurope", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+                // 주의: show()에서 소문자 'characterEurope'으로 등록했음
+                GameApp.drawTexture("characterEurope", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             }
         }
 
-
+        // 3. 아이템 및 인벤토리 (기존 코드 유지)
         for (Item item : worldItems) {
-            if (!item.collected) {
-                GameApp.drawTexture(item.name, item.x - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
-            }
+            if (!item.collected) GameApp.drawTexture(item.name, item.x - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
         }
-
         int invY = 600;
         GameApp.drawText("tech100", "Inventory", 50, invY, Color.WHITE);
         for (Item i : inventory) {
@@ -289,6 +285,7 @@ public class SideViewScreen extends ScalableGameScreen {
             GameApp.drawText("tech50", i.name + " x" + i.amount, 50, invY, Color.WHITE);
         }
         GameApp.endSpriteRendering();
+
         GameApp.startShapeRenderingFilled();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
