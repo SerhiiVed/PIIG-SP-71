@@ -1,6 +1,8 @@
 package nl.saxion.game.yourgamename;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import nl.saxion.gameapp.GameApp;
@@ -39,6 +41,8 @@ public class SideViewScreen extends ScalableGameScreen {
     float bgHeight;
     float bgScale;
     private static final String MUSIC_NAME = "game1_theme_music";
+    private static final String HYPER_SOUND = "hyper_sound";
+    private static final String VIRUS_SOUND = "virus_sound";
     float endCutscene = 0;
 
     @Override
@@ -65,6 +69,8 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
         GameApp.addMusic(MUSIC_NAME, "audio/game1_theme.mp3");
         GameApp.playMusic(MUSIC_NAME, true, 0.5f);
+        GameApp.addSound(HYPER_SOUND, "audio/item_hyper_drive_sound.mp3");
+        GameApp.addSound(VIRUS_SOUND, "audio/item_virus_sound.mp3");
 
          bgWidth = GameApp.getTextureWidth("EuropeBG");
          bgHeight = GameApp.getTextureHeight("EuropeBG");
@@ -171,133 +177,98 @@ public class SideViewScreen extends ScalableGameScreen {
         player.x = GameApp.clamp(player.x, 0, 10000);
         GameApp.clearScreen();
 
-//          Player movement
         if (isHyperDriving) {
-            hyperDriveTimer -= delta; // Timer Decreased for delta time
+            hyperDriveTimer -= delta;
             if (hyperDriveTimer <= 0) {
-                isHyperDriving = false; // Boost done when the time is done
+                isHyperDriving = false;
                 hyperDriveTimer = 0;
             }
         }
-
         if (isviruson) {
-            virusTimer -= delta; // Timer Decreased for delta time
+            virusTimer -= delta;
             if (virusTimer <= 0) {
-                isviruson = false; // Boost done when the time is done
+                isviruson = false;
                 virusTimer = 0;
             }
         }
 
         float currentSpeed = PLAYER_SPEED;
         float jumpImpulse = 800;
+        if (isHyperDriving) { currentSpeed *= SPEED_MULTIPLIER; jumpImpulse *= JUMP_MULTIPLIER; }
+        if (isviruson) { currentSpeed *= SPEED_DIVIDER; jumpImpulse *= JUMP_DIVIDER; }
 
-        if (isHyperDriving) {
-            currentSpeed *= SPEED_MULTIPLIER;
-            jumpImpulse *= JUMP_MULTIPLIER;
-        }
-
-        if (isviruson) {
-            currentSpeed *= SPEED_DIVIDER;
-            jumpImpulse *= JUMP_DIVIDER;
-        }
-
-        if (GameApp.isKeyPressed(Input.Keys.A)) {
-            player.x -= currentSpeed * delta;
-        } if (GameApp.isKeyPressed(Input.Keys.D)) {
-            player.x += currentSpeed * delta;
-        } if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
+        if (GameApp.isKeyPressed(Input.Keys.A)) player.x -= currentSpeed * delta;
+        if (GameApp.isKeyPressed(Input.Keys.D)) player.x += currentSpeed * delta;
+        if (GameApp.isKeyPressed(Input.Keys.SPACE) && player.isOnGround) {
             player.velocityY = jumpImpulse;
             player.isOnGround = false;
-        } if (player.velocityY < 0) {
-            player.isOnGround = false;
         }
-//        platforms movement
+        if (player.velocityY < 0) player.isOnGround = false;
+
         movePlatform(movingObstacle, movingObstacle.maxX, movingObstacle.minX);
         movePlatform(movingObstacle1, movingObstacle1.maxX, movingObstacle1.minX);
 
-//        Camera (follow player)
         if (player.x > camera.cameraX + camera.cameraTriggerF) {
             camera.cameraX = player.x - camera.cameraTriggerF;
         } else if (player.x < camera.cameraX + camera.cameraTriggerB) {
             camera.cameraX = player.x - camera.cameraTriggerB;
         }
-        player.velocityY = player.velocityY - (gravity * delta);
-        player.y += player.velocityY*delta;
-        if (player.y <= 0) {
-            player.y = 0;
-            player.isOnGround = true;
-        }
 
-//        Collecting items
+        player.velocityY = player.velocityY - (gravity * delta);
+        player.y += player.velocityY * delta;
+        if (player.y <= 0) { player.y = 0; player.isOnGround = true; }
+
         for (Item item : worldItems) {
-            if (!item.collected && GameApp.rectOverlap( player.x, player.y, PLAYER_SIZE, PLAYER_SIZE, item.x, item.y, ITEM_SIZE, ITEM_SIZE)) {
+            if (!item.collected && GameApp.rectOverlap(player.x, player.y, PLAYER_SIZE, PLAYER_SIZE, item.x, item.y, ITEM_SIZE, ITEM_SIZE)) {
                 collectItem(item);
             }
         }
-//        Adding relation of player to obstacle
-        for (Obstacle ob: obstacles) {
+        for (Obstacle ob : obstacles) {
             ob.playerMovement(oldPosY, oldPosX);
             movingObstacle.playerMovement(oldPosY, oldPosX);
             movingObstacle1.playerMovement(oldPosY, oldPosX);
         }
 
-        float drawWidth = bgWidth * bgScale;
-        float drawHeight = bgHeight * bgScale;
-
-        if (player.x >= 8300.0 && endCutscene == 0) {
-            endCutscene = 1;
-        }
-
-
+        if (player.x >= 8300.0 && endCutscene == 0) endCutscene = 1;
 
         GameApp.startSpriteRendering();
-            GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
+        float drawWidth = bgWidth * bgScale;
+        float drawHeight = bgHeight * bgScale;
+        GameApp.drawTexture("EuropeBG", -300 - camera.cameraX, 0, drawWidth, drawHeight);
 
-                for (Obstacle ob: obstacles) {
-                    if (ob.texture.equals("cargo")){
-                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
-                    } else {
-                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
-                    }
-                }
-            GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
-        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
-            GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+        for (Obstacle ob : obstacles) {
+            GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.texture.equals("cargo") ? 600 : ob.h);
+        }
+        GameApp.drawTexture(movingObstacle.texture, movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+        GameApp.drawTexture(movingObstacle1.texture, movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
+        GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
 
         for (Item item : worldItems) {
             if (!item.collected) {
-
-                String textureId = null;
-
-                if (item.name.equals("Hyper-drive")) {
-                    textureId = "Hyper-drive";
-                }
-                else if (item.name.equals("Virus")) {
-                    textureId = "Virus";
-                }
-                if (textureId != null) {
-                    GameApp.drawTexture(
-                            textureId,
-                            item.x - camera.cameraX,
-                            item.y,
-                            ITEM_SIZE,
-                            ITEM_SIZE
-                    );
-                }
+                GameApp.drawTexture(item.name, item.x - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
             }
         }
-            int y = 600;
-            GameApp.drawText("tech100", "Inventory", 50, y, Color.WHITE);
-            y -= 50;
 
+        int invY = 600;
+        GameApp.drawText("tech100", "Inventory", 50, invY, Color.WHITE);
         for (Item i : inventory) {
-            GameApp.drawText("tech50", i.name + " x" + i.amount, 50, y, Color.WHITE);
-            y -= 35;
+            invY -= 35;
+            GameApp.drawText("tech50", i.name + " x" + i.amount, 50, invY, Color.WHITE);
+        }
+        GameApp.endSpriteRendering();
+        GameApp.startShapeRenderingFilled();
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        if (isHyperDriving) {
+            GameApp.drawRect(0, 0, getWorldWidth(), getWorldHeight(), new Color(0.6f, 0f, 1f, 0.1f));
+            drawGlitches();
+        } else if (isviruson) {
+            GameApp.drawRect(0, 0, getWorldWidth(), getWorldHeight(), new Color(0f, 1f, 0f, 0.1f));
+            drawGlitches();
         }
 
-        GameApp.endSpriteRendering();
-
-        GameApp.startShapeRenderingFilled();
         if (endCutscene >= 1) {
             endCutscene += 7;
             GameApp.drawRectCentered(getWorldWidth()/2, getWorldHeight()/2, endCutscene, endCutscene, "black");
@@ -305,8 +276,23 @@ public class SideViewScreen extends ScalableGameScreen {
                 GameApp.switchScreen("TopDownScreen");
             }
         }
+
         GameApp.endShapeRendering();
 
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+
+    private void drawGlitches() {
+        for (int i = 0; i < 5; i++) {
+            float gx = GameApp.random(0, (int)getWorldWidth());
+            float gy = GameApp.random(0, (int)getWorldHeight());
+            float gw = GameApp.random(50, 400);
+            float gh = GameApp.random(2, 10);
+
+            String glitchColor = GameApp.random(0, 1) == 0 ? "white" : "black";
+            GameApp.drawRect(gx, gy, gw, gh, glitchColor);
+        }
     }
 
     @Override
@@ -320,34 +306,36 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.disposeTexture("EuropeBG");
         GameApp.disposeSpritesheet("characterEurope");
         GameApp.disposeAnimation("characterWalk");
+        GameApp.disposeSound(HYPER_SOUND);
+        GameApp.disposeSound(VIRUS_SOUND);
 
     }
 
 //    Custom methods
 //
-    public void collectItem(Item collectedItem) {
-        collectedItem.collected = true;
-
-        if (collectedItem.name.equals("Hyper-drive")) {
-            isHyperDriving = true;
-            hyperDriveTimer = HYPER_DRIVE_DURATION;
-        }
-        if (collectedItem.name.equals("Virus")) {
-            isviruson = true;
-            virusTimer = VIRUS_DURATION;
-        }
-        for (Item i : inventory) {
-            if (i.name.equals(collectedItem.name)) {
-                i.amount++;
-                return;
-            }
-        }
-        Item newItem = new Item();
-        newItem.name = collectedItem.name;
-        newItem.amount = 1;
-
-        inventory.add(newItem);
+public void collectItem(Item collectedItem) {
+    collectedItem.collected = true;
+    if (collectedItem.name.equals("Hyper-drive")) {
+        isHyperDriving = true;
+        hyperDriveTimer = HYPER_DRIVE_DURATION;
+        GameApp.playSound(HYPER_SOUND);
+    } else if (collectedItem.name.equals("Virus")) {
+        isviruson = true;
+        virusTimer = VIRUS_DURATION;
+        GameApp.playSound(VIRUS_SOUND);
     }
+    for (Item i : inventory) {
+        if (i.name.equals(collectedItem.name)) {
+            i.amount++;
+            return;
+        }
+    }
+
+    Item newItem = new Item();
+    newItem.name = collectedItem.name;
+    newItem.amount = 1;
+    inventory.add(newItem);
+}
 
 
     public void movePlatform (Obstacle ob, int x, int y) {
