@@ -44,6 +44,9 @@ public class SideViewScreen extends ScalableGameScreen {
     private static final String HYPER_SOUND = "hyper_sound";
     private static final String VIRUS_SOUND = "virus_sound";
     float endCutscene = 0;
+    boolean isWalkingForward = false;
+    boolean isWalkingBackward = false;
+    boolean lastForward = true;
 
     @Override
     public void show() {
@@ -58,10 +61,14 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addTexture("tire2", "textures/tire2Obstacle.png");
         GameApp.addTexture("trash", "textures/Trash.png");
         GameApp.addTexture("cargo", "textures/LongCargo.png");
+        GameApp.addTexture("characterEurope", "textures/characterEurope.png");
+        GameApp.addTexture("characterEuropeLookForward", "textures/characterEuropeLookForward.png");
 
         GameApp.addTexture("EuropeBG", "textures/EuropeBG.PNG");
-        GameApp.addSpriteSheet("characterEurope", "textures/characterEurope.png", 500, 650);
-        GameApp.addAnimationFromSpritesheet("characterWalk", "characterEurope", 0.25f, true);
+        GameApp.addSpriteSheet("characterEuropeForward", "textures/characterEuropeForward.png", 500, 650);
+        GameApp.addAnimationFromSpritesheet("characterWalkForward", "characterEuropeForward", 0.25f, true);
+        GameApp.addSpriteSheet("characterEuropeBackward", "textures/characterEuropeBackward.png", 500, 650);
+        GameApp.addAnimationFromSpritesheet("characterWalkBackward", "characterEuropeBackward", 0.25f, true);
 
         GameApp.addTexture("item", "textures/item.PNG");
         GameApp.addTexture("Hyper-drive", "textures/item_upgrade_hyper_drive.png");
@@ -167,7 +174,8 @@ public class SideViewScreen extends ScalableGameScreen {
 
     @Override
     public void render(float delta) {
-        GameApp.updateAnimation("characterWalk");
+        GameApp.updateAnimation("characterWalkForward");
+        GameApp.updateAnimation("characterWalkBackward");
 
         float oldPosX = player.x;
         float oldPosY = player.y;
@@ -239,9 +247,34 @@ public class SideViewScreen extends ScalableGameScreen {
         for (Obstacle ob : obstacles) {
             GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.texture.equals("cargo") ? 600 : ob.h);
         }
-        GameApp.drawTexture(movingObstacle.texture, movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
-        GameApp.drawTexture(movingObstacle1.texture, movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
-        GameApp.drawAnimation("characterWalk", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+
+
+
+        GameApp.startSpriteRendering();
+            GameApp.drawTexture("EuropeBG", -300-camera.cameraX, 0, drawWidth,  drawHeight);
+
+                for (Obstacle ob: obstacles) {
+                    if (ob.texture.equals("cargo")){
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, 600);
+                    } else {
+                        GameApp.drawTexture(ob.texture, ob.x - camera.cameraX, ob.y, ob.w, ob.h);
+                    }
+                }
+            GameApp.drawTexture(movingObstacle.texture ,movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
+        GameApp.drawTexture(movingObstacle1.texture,movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
+        if  (isWalkingForward) {
+            System.out.println("yes");
+            GameApp.drawAnimation("characterWalkForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+        } else if (isWalkingBackward) {
+            GameApp.drawAnimation("characterWalkBackward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+        } else {
+            if (lastForward) {
+                GameApp.drawTexture("characterEuropeLookForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+            } else {
+                GameApp.drawTexture("CharacterEurope", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
+            }
+        }
+
 
         for (Item item : worldItems) {
             if (!item.collected) {
@@ -308,6 +341,12 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.disposeAnimation("characterWalk");
         GameApp.disposeSound(HYPER_SOUND);
         GameApp.disposeSound(VIRUS_SOUND);
+        GameApp.disposeTexture("characterEurope");
+        GameApp.disposeTexture("characterEuropeLookForward");
+        GameApp.disposeSpritesheet("characterEuropeForward");
+        GameApp.disposeSpritesheet("characterEuropeBackward");
+        GameApp.disposeAnimation("characterWalkForward");
+        GameApp.disposeAnimation("characterWalkBackward");
 
     }
 
