@@ -20,5 +20,6 @@ public class Main {
 
         // Start game loop and show main menu screen
         GameApp.start("MainMenuScreen", 800, 450, 60, false, "MainMenuScreen");
+
     }
 }
