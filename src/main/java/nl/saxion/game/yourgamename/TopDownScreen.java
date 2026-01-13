@@ -170,7 +170,9 @@ public class TopDownScreen extends ScalableGameScreen {
 
         if (PlayerCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("tech300", "You Died :(", getWorldWidth()/2, getWorldHeight()/2, "red-600");
-
+            if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
+                GameApp.switchScreen("SideViewScreen");
+            }
         }
         if (BossCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("tech300", "!!! You Won !!!", getWorldWidth()/2, getWorldHeight()/2, "green-500");
