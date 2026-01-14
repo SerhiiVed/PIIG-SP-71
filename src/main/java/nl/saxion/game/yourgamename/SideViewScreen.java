@@ -64,13 +64,13 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.addTexture("characterEurope", "textures/characterEurope.png");
         GameApp.addTexture("characterEuropeLookForward", "textures/characterEuropeLookForward.png");
 
-        GameApp.addTexture("EuropeBG", "textures/EuropeBG.PNG");
+        GameApp.addTexture("EuropeBG", "textures/EuropeBG.png");
         GameApp.addSpriteSheet("characterEuropeForward", "textures/characterEuropeForward.png", 500, 650);
         GameApp.addAnimationFromSpritesheet("characterWalkForward", "characterEuropeForward", 0.25f, true);
         GameApp.addSpriteSheet("characterEuropeBackward", "textures/characterEuropeBackward.png", 500, 650);
         GameApp.addAnimationFromSpritesheet("characterWalkBackward", "characterEuropeBackward", 0.25f, true);
 
-        GameApp.addTexture("item", "textures/item.PNG");
+        GameApp.addTexture("item", "textures/item.png");
         GameApp.addTexture("Hyper-drive", "textures/item_upgrade_hyper_drive.png");
         GameApp.addTexture("Virus", "textures/item_downgrade_virus.png");
         GameApp.addFont("basicFont", "fonts/basic.ttf", 60);
