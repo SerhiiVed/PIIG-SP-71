@@ -74,10 +74,10 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
 //        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
 
-        GameApp.addTexture("characterIdleUp", "textures/TopDownIdleUp.PNG");
-        GameApp.addTexture("characterIdleDown", "textures/TopDownIdleDown.PNG");
-        GameApp.addTexture("characterIdleRight", "textures/TopDownIdleRight.PNG");
-        GameApp.addTexture("characterIdleLeft", "textures/TopDownIdleLeft.PNG");
+        GameApp.addTexture("characterIdleUp", "textures/TopDownIdleUp.png");
+        GameApp.addTexture("characterIdleDown", "textures/TopDownIdleDown.png");
+        GameApp.addTexture("characterIdleRight", "textures/TopDownIdleRight.png");
+        GameApp.addTexture("characterIdleLeft", "textures/TopDownIdleLeft.png");
         GameApp.addSpriteSheet("characterUpSheet", "textures/TopDownUp.png", 224, 261);
         GameApp.addAnimationFromSpritesheet("characterUp", "characterUpSheet", 0.15f, true);
         GameApp.addSpriteSheet("characterDownSheet", "textures/TopDownDown.png", 224, 261);
