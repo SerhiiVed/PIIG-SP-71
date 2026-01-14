@@ -55,6 +55,10 @@ public class TopDownScreen extends ScalableGameScreen {
     private boolean isGameOverMusicPlaying = false;
     boolean cutscene = false;
     float fadeIn = 1500;
+    String WalkState = "idle";
+    String IdleState = "down";
+    boolean requestScreenSwitch = false;
+
 
     public TopDownScreen() {
         super(1280, 720);
@@ -70,6 +74,19 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.addTexture("EuropeBossBG", "textures/europeBossBG.png");
 //        GameApp.addTexture("EuropeBoss", "textures/europeBoss.png");
 
+        GameApp.addTexture("characterIdleUp", "textures/TopDownIdleUp.PNG");
+        GameApp.addTexture("characterIdleDown", "textures/TopDownIdleDown.PNG");
+        GameApp.addTexture("characterIdleRight", "textures/TopDownIdleRight.PNG");
+        GameApp.addTexture("characterIdleLeft", "textures/TopDownIdleLeft.PNG");
+        GameApp.addSpriteSheet("characterUpSheet", "textures/TopDownUp.png", 224, 261);
+        GameApp.addAnimationFromSpritesheet("characterUp", "characterUpSheet", 0.15f, true);
+        GameApp.addSpriteSheet("characterDownSheet", "textures/TopDownDown.png", 224, 261);
+        GameApp.addAnimationFromSpritesheet("characterDown", "characterDownSheet", 0.15f, true);
+        GameApp.addSpriteSheet("characterLeftSheet", "textures/TopDownLeft.png", 224, 261);
+        GameApp.addAnimationFromSpritesheet("characterLeft", "characterLeftSheet", 0.15f, true);
+        GameApp.addSpriteSheet("characterRightSheet", "textures/TopDownRight.png", 224, 261);
+        GameApp.addAnimationFromSpritesheet("characterRight", "characterRightSheet", 0.15f, true);
+
         GameApp.addFont("basic", "fonts/basic.ttf", 50);
         GameApp.addFont("basic2", "fonts/basic.ttf", 200);
         GameApp.addMusic(MUSIC_NAME, "audio/game2_theme.mp3");
@@ -81,8 +98,8 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.addMusic(WIN_MUSIC, "audio/win_music.mp3");
         GameApp.addMusic(LOSE_MUSIC, "audio/lose_music.mp3");
 
-        PlayerCharacter.TopDownWidth = 40;
-        PlayerCharacter.TopDownHeight = 40;
+        PlayerCharacter.TopDownWidth = 65;
+        PlayerCharacter.TopDownHeight = 65;
         PlayerCharacter.x = getWorldWidth() / 2 - PlayerCharacter.TopDownWidth / 2;
         PlayerCharacter.y = 100;
 
@@ -149,24 +166,33 @@ public class TopDownScreen extends ScalableGameScreen {
 
         if (PlayerCharacter.currentHealth != 0f && BossCharacter.currentHealth != 0f && cutscene) {
 
+            WalkState = "idle";
             if (GameApp.isKeyPressed(Input.Keys.W)) {
                 if (!((PlayerCharacter.y + PlayerCharacter.TopDownHeight) >= getWorldHeight())) {
                     PlayerCharacter.y += currentSpeed * delta;
+                    WalkState = "up";
+                    IdleState = "up";
                 }
             }
             if (GameApp.isKeyPressed(Input.Keys.S)) {
                 if (!(PlayerCharacter.y <= 0)) {
                     PlayerCharacter.y -= currentSpeed * delta;
+                    WalkState = "down";
+                    IdleState = "down";
                 }
             }
             if (GameApp.isKeyPressed(Input.Keys.A)) {
                 if (!(PlayerCharacter.x <= 0)) {
                     PlayerCharacter.x -= currentSpeed * delta;
+                    WalkState = "left";
+                    IdleState = "left";
                 }
             }
             if (GameApp.isKeyPressed(Input.Keys.D)) {
                 if (!((PlayerCharacter.x + PlayerCharacter.TopDownWidth) >= getWorldWidth())) {
                     PlayerCharacter.x += currentSpeed * delta;
+                    WalkState = "right";
+                    IdleState = "right";
                 }
             }
 
@@ -253,7 +279,7 @@ public class TopDownScreen extends ScalableGameScreen {
         if (PlayerCharacter.currentHealth == 0f) {
             GameApp.drawTextCentered("tech300", "You Died :(", getWorldWidth()/2, getWorldHeight()/2, "red-600");
             if (GameApp.isKeyPressed(Input.Keys.SPACE)) {
-                GameApp.switchScreen("SideViewScreen");
+                requestScreenSwitch = true;
             }
         }
         if (BossCharacter.currentHealth == 0f) {
@@ -282,6 +308,29 @@ public class TopDownScreen extends ScalableGameScreen {
             }
             GameApp.drawTextCentered("tech300", "!!! You Won !!!", getWorldWidth()/2, getWorldHeight()/2, "green-500");
         }
+        if (WalkState.equals("up")) {
+           GameApp.drawAnimation("characterUp", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            GameApp.updateAnimation("characterUp");
+        } else if (WalkState.equals("down")) {
+            GameApp.drawAnimation("characterDown", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            GameApp.updateAnimation("characterDown");
+        } else if (WalkState.equals("right")) {
+            GameApp.drawAnimation("characterRight", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            GameApp.updateAnimation("characterRight");
+        } else if ( WalkState.equals("left")) {
+            GameApp.drawAnimation("characterLeft", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            GameApp.updateAnimation("characterLeft");
+        } else if (WalkState.equals("idle")) {
+            if (IdleState.equals("up")) {
+                GameApp.drawTexture("characterIdleUp", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            } else if (IdleState.equals("down")) {
+                GameApp.drawTexture("characterIdleDown", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            } else if (IdleState.equals("right")) {
+                GameApp.drawTexture("characterIdleRight", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            } else if (IdleState.equals("left")) {
+                GameApp.drawTexture("characterIdleLeft", PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight);
+            }
+        }
 
         GameApp.endSpriteRendering();
 
@@ -290,7 +339,7 @@ public class TopDownScreen extends ScalableGameScreen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
+        //GameApp.drawRect(PlayerCharacter.x, PlayerCharacter.y, PlayerCharacter.TopDownWidth, PlayerCharacter.TopDownHeight, "black");
         GameApp.drawRect(healthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
         GameApp.drawRect(healthBarX, GameApp.getWorldHeight() - 80, currentHealthWidth, healthBarsHeight, Color.GREEN);
         GameApp.drawRect(GameApp.getWorldWidth() - bossHealthBarX, GameApp.getWorldHeight() - 80, healthBarsWidth, healthBarsHeight, Color.RED);
@@ -355,6 +404,9 @@ public class TopDownScreen extends ScalableGameScreen {
                 itemActiveTimer = 5.0f;
             }
         }
+        if (requestScreenSwitch) {
+            GameApp.switchScreen("SideViewScreen");
+        }
     }
 
     private void activateItemEffect(String itemName) {
@@ -382,5 +434,17 @@ public class TopDownScreen extends ScalableGameScreen {
         GameApp.disposeFont("tech300");
         GameApp.disposeFont("basic");
         GameApp.disposeFont("basic2");
+        GameApp.disposeTexture("characterIdleUp");
+        GameApp.disposeTexture("characterIdleDown");
+        GameApp.disposeTexture("characterIdleLeft");
+        GameApp.disposeTexture("characterIdleRight");
+        GameApp.disposeSpritesheet("characterRightSheet");
+        GameApp.disposeSpritesheet("characterLeftSheet");
+        GameApp.disposeSpritesheet("characterUpSheet");
+        GameApp.disposeSpritesheet("characterDownSheet");
+        GameApp.disposeAnimation("characterDown");
+        GameApp.disposeAnimation("characterUp");
+        GameApp.disposeAnimation("characterRight");
+        GameApp.disposeAnimation("characterLeft");
     }
 }
