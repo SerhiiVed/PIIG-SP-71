@@ -146,13 +146,19 @@ public class TopDownScreen extends ScalableGameScreen {
 
             if (GameApp.timerWentOff("attack")) {
                 if (attkCount == 1) {
-                    BossCharacter.shootArcTowardPlayer(10, 700, 30);
+//                    BossCharacter.shootArcTowardPlayer(10, 700, 30);
+                    BossCharacter.shootAtPlayer();
                     attkCount = 2;
                 } else if (attkCount == 2) {
                     BossCharacter.shootCircle(30,600f);
                     attkCount = 3;
                 } else if (attkCount == 3) {
-                    BossCharacter.shootCircleWithGaps(100, 200f, 30f, 70f);
+                    BossCharacter.shootCircleWithGaps(100, 200f, 30f, 70f, 210f, 250f);
+                    System.out.println("attack 3");
+                    attkCount = 4;
+                } else if (attkCount == 4) {
+                    BossCharacter.shootAtPlayer();
+                    System.out.println("attack 4");
                     attkCount = 1;
                 }
             }

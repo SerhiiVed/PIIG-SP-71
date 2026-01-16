@@ -53,7 +53,6 @@ public class Boss {
     public void shootAtPlayer() {
         float dx = (playerToTarget.x + playerToTarget.w / 2f) - x;
         float dy = (playerToTarget.y + playerToTarget.h / 2f) - y;
-
         float length = (float) Math.sqrt(dx*dx + dy*dy);
         float dirX = dx / length;
         float dirY = dy / length;
@@ -64,8 +63,10 @@ public class Boss {
         float velY = dirY * speed;
 
 //        bullets.add(new Bullet(x, y, velX, velY));
-        partArray.Parts.add(new Part(x + w / 2f, y + h / 2f, 10, 10, 1f, playerToTarget, this, false, true, true, velX, velY));
+        partArray.Parts.add(new Part(x, y, 10, 10, 1f, playerToTarget, this, false, true, true, velX, velY));
     }
+
+
 
     public void shootCircle(int bulletCount, float speed) {
         float cx = x + w / 2f;   // center of the boss
@@ -125,7 +126,7 @@ public class Boss {
         }
     }
 
-    public void shootCircleWithGaps(int bulletCount, float speed, float gapStartDeg, float gapEndDeg) {
+    public void shootCircleWithGaps(int bulletCount, float speed, float gapStartDeg1, float gapEndDeg1, float gapStartDeg2, float gapEndDeg2) {
 
         float cx = x + w / 2f;
         float cy = y + h / 2f;
@@ -135,8 +136,10 @@ public class Boss {
             float angleDeg = (360f * i / bulletCount);
 
             // Skip bullets inside the gap
-            if (angleDeg >= gapStartDeg && angleDeg <= gapEndDeg) {
+            if (angleDeg >= gapStartDeg1 && angleDeg <= gapEndDeg1) {
                 continue;   // Do NOT shoot this angle
+            } else if (angleDeg >= gapStartDeg2 && angleDeg <= gapEndDeg2) {
+                continue;
             }
 
             float angleRad = (float) Math.toRadians(angleDeg);

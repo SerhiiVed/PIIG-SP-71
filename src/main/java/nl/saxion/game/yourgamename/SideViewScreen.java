@@ -168,7 +168,7 @@ public class SideViewScreen extends ScalableGameScreen {
         super.render(delta);
 
         int gravity = 2000;
-        player.x = GameApp.clamp(player.x, 0, 10000);
+        player.x = GameApp.clamp(player.x, 0, 8500);
         GameApp.clearScreen();
 
 //          Player movement
