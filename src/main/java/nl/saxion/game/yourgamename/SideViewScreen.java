@@ -50,8 +50,8 @@ public class SideViewScreen extends ScalableGameScreen {
 
     @Override
     public void show() {
-        GameApp.addFont("tech100", "fonts/ShareTech-Regular.ttf", 100);
-        GameApp.addFont("tech50", "fonts/ShareTech-Regular.ttf", 70);
+        GameApp.addFont("tech100", "fonts/ShareTech-Regular.ttf", 50);
+        GameApp.addFont("tech50", "fonts/ShareTech-Regular.ttf", 30);
 
         GameApp.addTexture("bush", "textures/bushObstacle.png");
         GameApp.addTexture("hand", "textures/handObstacle.png");
