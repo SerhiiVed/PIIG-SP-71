@@ -259,22 +259,18 @@ public class SideViewScreen extends ScalableGameScreen {
         GameApp.drawTexture(movingObstacle.texture, movingObstacle.x - camera.cameraX, movingObstacle.y, movingObstacle.w, 600);
         GameApp.drawTexture(movingObstacle1.texture, movingObstacle1.x - camera.cameraX, movingObstacle1.y, movingObstacle1.w, 600);
 
-        // 2. 캐릭터 애니메이션/텍스처 결정 로직 🎯
         if (isWalkingForward) {
             GameApp.drawAnimation("characterWalkForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         } else if (isWalkingBackward) {
             GameApp.drawAnimation("characterWalkBackward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
         } else {
-            // 정지 상태 (Idle)
             if (lastForward) {
                 GameApp.drawTexture("characterEuropeLookForward", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             } else {
-                // 주의: show()에서 소문자 'characterEurope'으로 등록했음
                 GameApp.drawTexture("characterEurope", player.x - camera.cameraX, player.y, PLAYER_SIZE, PLAYER_SIZE);
             }
         }
 
-        // 3. 아이템 및 인벤토리 (기존 코드 유지)
         for (Item item : worldItems) {
             if (!item.collected) GameApp.drawTexture(item.name, item.x - camera.cameraX, item.y, ITEM_SIZE, ITEM_SIZE);
         }
